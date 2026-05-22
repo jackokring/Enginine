@@ -8,7 +8,7 @@ commited (change the `Parser > Scope: Project` in the tab). Still haven't manage
 
  - [X] Basic audio pass volume
  - [X] ParameterAttachment mechanism (for visual updates on parameter change)
- - [X] Load/save stae mechanism
+ - [X] Load/save state mechanism
  - [ ] Look and Feel
  - [ ] Audio Processing
  - [ ] Layout Flex/Grid and Keyboard
@@ -24,4 +24,5 @@ commited (change the `Parser > Scope: Project` in the tab). Still haven't manage
 ## Thanks
 
 Simon Jackson
+
 Project Director
