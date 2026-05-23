@@ -20,12 +20,17 @@ EnginineAudioProcessor::EnginineAudioProcessor()
                        )
 #endif
 {
+    auto decimals = juce::AudioParameterFloatAttributes()
+        .withStringFromValueFunction ([] (auto x, auto) { return juce::String(floor(x * 1000) / 1000); });
     addParameter (
         volume = new juce::AudioParameterFloat (
             { "gain", 1 }, // parameter ID, version
             "Gain", // parameter name
             juce::NormalisableRange<float> (0.0f, 1.0f), // parameter range
-            0.5f)); // default value
+            0.5f, // default value
+            decimals.withLabel("%") // restrictions on print
+        )
+    );
 }
 
 EnginineAudioProcessor::~EnginineAudioProcessor()

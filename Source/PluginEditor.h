@@ -21,6 +21,11 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void knob(juce::Slider& slider,
+              std::function<void()> lambda,
+              juce::AudioParameterFloat* para,
+              juce::SliderParameterAttachment*& pa);
+    void labelKnob(juce::Label& label, const juce::String& text);
 
 private:
     // This reference is provided as a quick way for your editor to
