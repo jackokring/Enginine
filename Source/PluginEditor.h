@@ -32,6 +32,12 @@ public:
         nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr
     };
 
+    juce::String sLayout[3][7] = {
+        "", "", "", "", "", "", "Volume",
+        "", "", "", "", "", "", "",
+        "", "", "", "", "", "", ""
+    };
+
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.

@@ -51,7 +51,7 @@ void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     g.setColour (juce::Colours::white);
-    g.setFont (juce::FontOptions (13.0f));
+    g.setFont (juce::FontOptions (15.0f));
 
     auto area = getLocalBounds();
     auto keysHeight = 100;
@@ -63,9 +63,7 @@ void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
     auto cHeight = area.getHeight() / 3;
 
     for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
-      if(layout[y][x] != nullptr) {
-        g.drawFittedText(layout[y][x]->getName(), x * cWidth, y * cHeight, cWidth, 13, juce::Justification::centred, 1);
-      }
+      g.drawFittedText(sLayout[y][x], x * cWidth, y * cHeight, cWidth + 5, 15, juce::Justification::centredBottom, 1);
     }
 }
 
@@ -83,6 +81,6 @@ void EnginineAudioProcessorEditor::resized()
     auto cHeight = area.getHeight() / 3;
 
     for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
-      if(layout[y][x] != nullptr) layout[y][x]->setBounds(x * cWidth, y * cHeight + 13, cWidth, cHeight);
+      if(layout[y][x] != nullptr) layout[y][x]->setBounds(x * cWidth, y * cHeight + 15, cWidth, cHeight);
     }
 }
