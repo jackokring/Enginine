@@ -54,6 +54,7 @@ public:
 
 //private:
     //==============================================================================
+    juce::MidiKeyboardState keyState;
     juce::AudioParameterFloat* volume;
     float previousVolume;
 

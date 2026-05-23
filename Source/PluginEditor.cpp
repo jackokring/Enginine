@@ -9,11 +9,17 @@
 
 //==============================================================================
 EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p),
+    keyboard(p.keyState, juce::MidiKeyboardComponent::horizontalKeyboard)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
+
+    keyboard.setMidiChannel(1);// int
+    keyboard.setMidiChannelsToDisplay(1);// bit-mask
+
+    addAndMakeVisible(keyboard);
     addAndMakeVisible (volumeSlider);
     volumeSlider.setTextValueSuffix (" Louds");
     volumeSlider.onValueChange = [this] {
@@ -45,5 +51,8 @@ void EnginineAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+    auto area = getLocalBounds();
+    auto keysHeight = 60;
+    keyboard.setBounds(area.removeFromBottom(keysHeight));
     volumeSlider.setBounds (20, 20, 40, 40);
 }

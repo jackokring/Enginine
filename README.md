@@ -11,7 +11,8 @@ commited (change the `Parser > Scope: Project` in the tab). Still haven't manage
  - [X] Load/save state mechanism
  - [ ] Look and Feel
  - [ ] Audio Processing
- - [ ] Layout Flex/Grid and Keyboard
+ - [ ] Layout Flex/Grid
+ - [X] Keyboard
  - [ ] Simple MIDI out
  - [ ] Parameter presets
  - [ ] Parameter skew

@@ -153,6 +153,7 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
     {
+        keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
         buffer.applyGainRamp (0, buffer.getNumSamples(), previousVolume, *volume);
         previousVolume = *volume;
     }

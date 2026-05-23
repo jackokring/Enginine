@@ -26,6 +26,7 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     EnginineAudioProcessor& audioProcessor;
+    juce::MidiKeyboardComponent keyboard;
     juce::Slider volumeSlider;
     juce::Label volumeLabel;
     juce::SliderParameterAttachment *volumePA;
