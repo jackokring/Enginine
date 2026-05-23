@@ -22,7 +22,7 @@ EnginineAudioProcessor::EnginineAudioProcessor()
 {
     addParameter (
         volume = new juce::AudioParameterFloat (
-            "gain", // parameter ID
+            { "gain", 1 }, // parameter ID, version
             "Gain", // parameter name
             juce::NormalisableRange<float> (0.0f, 1.0f), // parameter range
             0.5f)); // default value
