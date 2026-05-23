@@ -7,6 +7,16 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+template <typename ValueT>
+juce::NormalisableRange<ValueT> logRange (ValueT min, ValueT max)
+{
+    ValueT rng{ std::log (max / min) };
+    return { min, max,
+        [=](ValueT min, ValueT, ValueT v) { return std::exp (v * rng) * min; },
+        [=](ValueT min, ValueT, ValueT v) { return std::log (v / min) / rng; }
+    };
+}
+
 //==============================================================================
 EnginineAudioProcessor::EnginineAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -22,13 +32,16 @@ EnginineAudioProcessor::EnginineAudioProcessor()
 {
     auto decimals = juce::AudioParameterFloatAttributes()
         .withStringFromValueFunction ([] (auto x, auto) { return juce::String(floor(x * 1000) / 1000); });
+    auto linpow = juce::NormalisableRange<float>(0.0f, 100.0f, 0.0f, 0.5f);
+    auto hearing = logRange(20.0f, 20000.0f);
+
     addParameter (
         volume = new juce::AudioParameterFloat (
-            { "gain", 1 }, // parameter ID, version
-            "Gain", // parameter name
-            juce::NormalisableRange<float> (0.0f, 1.0f), // parameter range
-            0.5f, // default value
-            decimals.withLabel("%") // restrictions on print
+            { "volume", 1 }, // parameter ID, version
+            "Volume", // parameter name
+            linpow, // parameter range
+            50.0f, // default value
+            decimals.withLabel(" %") // restrictions on print
         )
     );
 }
@@ -193,7 +206,7 @@ void EnginineAudioProcessor::setStateInformation (const void* data, int sizeInBy
     std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
     if (xmlState.get() != nullptr) {
         if (xmlState->hasTagName ("EnginineState")) {
-            *volume = (float) xmlState->getDoubleAttribute ("volume", 1.0);
+            *volume = (float) xmlState->getDoubleAttribute ("volume", *volume);
         }
     }
 }
