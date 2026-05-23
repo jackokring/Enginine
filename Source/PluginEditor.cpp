@@ -20,12 +20,6 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
   pa = new juce::SliderParameterAttachment(*para, slider);
 }
 
-void EnginineAudioProcessorEditor::labelKnob(juce::Label& label, const juce::String& text)
-{
-  addAndMakeVisible(label);
-  label.setText(text, juce::NotificationType::dontSendNotification);
-}
-
 //==============================================================================
 EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p),
@@ -42,9 +36,6 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     knob(volumeSlider, [this] {
       *audioProcessor.volume = volumeSlider.getValue();
     }, audioProcessor.volume, volumePA);
-    //labelKnob(volumeLabel, "Volume");
-
-
 }
 
 EnginineAudioProcessorEditor::~EnginineAudioProcessorEditor()
@@ -60,8 +51,22 @@ void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     g.setColour (juce::Colours::white);
-    //g.setFont (juce::FontOptions (15.0f));
-    //g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
+    g.setFont (juce::FontOptions (13.0f));
+
+    auto area = getLocalBounds();
+    auto keysHeight = 100;
+    auto margin = 20;
+    area = area.removeFromBottom(keysHeight);
+
+    area = area.reduced(margin);
+    auto cWidth = area.getWidth() / 7;
+    auto cHeight = area.getHeight() / 3;
+
+    for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+      if(layout[y][x] != nullptr) {
+        g.drawFittedText(layout[y][x]->getName(), x * cWidth, y * cHeight, cWidth, 13, juce::Justification::centred, 1);
+      }
+    }
 }
 
 void EnginineAudioProcessorEditor::resized()
@@ -72,16 +77,12 @@ void EnginineAudioProcessorEditor::resized()
     auto keysHeight = 100;
     auto margin = 20;
     keyboard.setBounds(area.removeFromBottom(keysHeight));
+
     area = area.reduced(margin);
     auto cWidth = area.getWidth() / 7;
     auto cHeight = area.getHeight() / 3;
-    juce::Component* layout[3][7] = {
-      nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider,
-      nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
-      nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr
-    };
 
     for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
-      if(layout[y][x] != nullptr) layout[y][x]->setBounds(x * cWidth, y * cHeight, cWidth, cHeight);
+      if(layout[y][x] != nullptr) layout[y][x]->setBounds(x * cWidth, y * cHeight + 13, cWidth, cHeight);
     }
 }

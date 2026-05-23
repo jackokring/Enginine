@@ -25,7 +25,12 @@ public:
               std::function<void()> lambda,
               juce::AudioParameterFloat* para,
               juce::SliderParameterAttachment*& pa);
-    void labelKnob(juce::Label& label, const juce::String& text);
+
+    juce::Slider* layout[3][7] = {
+        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider,
+        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr
+    };
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -33,7 +38,6 @@ private:
     EnginineAudioProcessor& audioProcessor;
     juce::MidiKeyboardComponent keyboard;
     juce::Slider volumeSlider;
-    juce::Label volumeLabel;
     juce::SliderParameterAttachment *volumePA;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnginineAudioProcessorEditor)
