@@ -21,6 +21,7 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
 
     addAndMakeVisible(keyboard);
     addAndMakeVisible (volumeSlider);
+    volumeSlider.setSliderStyle(juce::Slider::Rotary);
     volumeSlider.setTextValueSuffix (" Louds");
     volumeSlider.onValueChange = [this] {
       *audioProcessor.volume = volumeSlider.getValue();
@@ -44,7 +45,7 @@ void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (juce::FontOptions (15.0f));
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
+    //g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void EnginineAudioProcessorEditor::resized()
@@ -53,6 +54,14 @@ void EnginineAudioProcessorEditor::resized()
     // subcomponents in your editor..
     auto area = getLocalBounds();
     auto keysHeight = 60;
+    auto margin = 10;
     keyboard.setBounds(area.removeFromBottom(keysHeight));
-    volumeSlider.setBounds (20, 20, 40, 40);
+
+    juce::Grid grid;
+#define Cell juce::Grid::TrackInfo(juce::Grid::Fr(1))
+#define Item juce::GridItem
+    grid.templateRows = { Cell, Cell, Cell };
+    grid.templateColumns = { Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell };
+    grid.items = { Item(volumeSlider) };
+    grid.performLayout(area.reduced(margin));
 }
