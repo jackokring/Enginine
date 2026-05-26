@@ -1,6 +1,0 @@
-CompileFlags:
-  Add:
-    - "-I/home/jacko/Enginine/JuceLibraryCode"
-    - "-I/home/jacko/JUCE/modules"
-    - "-I/home/jacko/Enginine/Source"
-    - "-I/usr/include/freetype2"
