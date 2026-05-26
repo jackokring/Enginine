@@ -7,6 +7,9 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#define keysHeight 100
+#define margin 20
+
 void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                                              std::function<void()> lambda,
                                              juce::AudioParameterFloat* para,
@@ -28,6 +31,9 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (800, 600);
+
+    // alter look and feel of knobs
+    getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::red);
 
     addAndMakeVisible(keyboard);
     keyboard.setMidiChannel(1);// int
@@ -54,16 +60,14 @@ void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
     g.setFont (juce::FontOptions (15.0f));
 
     auto area = getLocalBounds();
-    auto keysHeight = 100;
-    auto margin = 20;
     area = area.removeFromBottom(keysHeight);
-
     area = area.reduced(margin);
     auto cWidth = area.getWidth() / 7;
     auto cHeight = area.getHeight() / 3;
 
     for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
-      g.drawFittedText(sLayout[y][x], x * cWidth, y * cHeight, cWidth + 5, 15, juce::Justification::centredBottom, 1);
+      auto name = sLayout[y][x];
+      g.drawFittedText(name, x * cWidth, y * cHeight, cWidth, 15, juce::Justification::centredBottom, 1);
     }
 }
 
@@ -72,15 +76,12 @@ void EnginineAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     auto area = getLocalBounds();
-    auto keysHeight = 100;
-    auto margin = 20;
     keyboard.setBounds(area.removeFromBottom(keysHeight));
-
     area = area.reduced(margin);
     auto cWidth = area.getWidth() / 7;
     auto cHeight = area.getHeight() / 3;
 
     for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
-      if(layout[y][x] != nullptr) layout[y][x]->setBounds(x * cWidth, y * cHeight + 15, cWidth, cHeight);
+      if(layout[y][x] != nullptr) layout[y][x]->setBounds(x * cWidth, y * cHeight + 15, cWidth, cHeight - 15);
     }
 }

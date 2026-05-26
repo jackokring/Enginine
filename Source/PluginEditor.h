@@ -27,18 +27,19 @@ public:
               juce::SliderParameterAttachment*& pa);
 
     juce::Slider* layout[3][7] = {
-        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider,
-        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
-        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr
+        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
+        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
+        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
 
+    // for some reason the joined knob does not like retrieving the parameter's name
     juce::String sLayout[3][7] = {
-        "", "", "", "", "", "", "Volume",
-        "", "", "", "", "", "", "",
-        "", "", "", "", "", "", ""
+        { "", "", "", "", "", "", "Volume" },
+        { "", "", "", "", "", "", "" },
+        { "", "", "", "", "", "", "" }
     };
 
-private:
+//private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     EnginineAudioProcessor& audioProcessor;
