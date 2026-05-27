@@ -60,14 +60,20 @@ void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
     g.setFont (juce::FontOptions (15.0f));
 
     auto area = getLocalBounds();
-    area = area.removeFromBottom(keysHeight);
+    area.removeFromBottom(keysHeight);
     area = area.reduced(margin);
-    auto cWidth = area.getWidth() / 7;
-    auto cHeight = area.getHeight() / 3;
+    auto cWidth = area.getWidth() / 7.0f;
+    auto cHeight = area.getHeight() / 3.0f;
+    auto xOff = area.getX();
+    auto yOff = area.getY();
 
     for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
       auto name = sLayout[y][x];
-      g.drawFittedText(name, x * cWidth, y * cHeight, cWidth, 15, juce::Justification::centredBottom, 1);
+      g.drawFittedText(name, x * cWidth + xOff, y * cHeight + yOff,
+          cWidth, 15, juce::Justification::centredBottom, 1);
+      //bounds
+      g.drawRect(x * cWidth + xOff + 3, y * cHeight + 20 + yOff,
+          cWidth - 6, cHeight - 20);
     }
 }
 
@@ -78,10 +84,13 @@ void EnginineAudioProcessorEditor::resized()
     auto area = getLocalBounds();
     keyboard.setBounds(area.removeFromBottom(keysHeight));
     area = area.reduced(margin);
-    auto cWidth = area.getWidth() / 7;
-    auto cHeight = area.getHeight() / 3;
+    auto cWidth = area.getWidth() / 7.0f;
+    auto cHeight = area.getHeight() / 3.0f;
+    auto xOff = area.getX();
+    auto yOff = area.getY();
 
     for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
-      if(layout[y][x] != nullptr) layout[y][x]->setBounds(x * cWidth, y * cHeight + 15, cWidth, cHeight - 15);
+      if(layout[y][x] != nullptr) layout[y][x]->setBounds(x * cWidth + 5 + xOff,
+          y * cHeight + 25 + yOff, cWidth - 10, cHeight - 30);
     }
 }
