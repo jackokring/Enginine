@@ -20,6 +20,16 @@ So I've dumped `KDevelop` and started using `Zed` (with `bear` to make the `comp
  - [ ] SVG/vector background
  - [X] Zed/Bear build (if your home is `/home/jacko`)
 
+## Notes on Bear Setup
+
+After cloning the repository, delete the `.json` file in the root. Goto `Builds/LinuxMakefile` and `make clean`.
+Then maybe `sudo apt install bear` (for the bear tool) and `bear -- make` instead of `make`. The made file
+`compile_commands.json` needs linking to the root by `ln -s compile_commands.json ../../compile_commands.json`
+within the `LinuxMakefile` directory. The settings of open terminals for me are project root (`git`),
+`LinuxMakefile` (`make`) and a final terminal open in `Builds/LinuxMakefile/build` (for `./Enginine` launching).
+
+I'll work more on this setup later on as the project evolves.
+
 ## Comercial Stuff
 
  - [ ] Might not be in this repository (JUCE has reasonable terms)
