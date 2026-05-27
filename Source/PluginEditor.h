@@ -27,17 +27,17 @@ public:
               juce::AudioParameterFloat* para,
               juce::SliderParameterAttachment*& pa);
 
-    juce::Slider* layout[3][7] = {
-        { &presetSlider, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
-        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
-        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
+    juce::Slider* layout[3][9] = {
+        { &presetSlider, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
+        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
+        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
 
     // for some reason the joined knob does not like retrieving the parameter's name
-    juce::String sLayout[3][7] = {
-        { "Save In", "", "", "", "", "", "Volume" },
-        { "", "", "", "", "", "", "" },
-        { "", "", "", "", "", "", "" }
+    juce::String sLayout[3][9] = {
+        { "Save In", "", "", "", "", "", "", "", "Volume" },
+        { "", "", "", "", "", "", "", "", "" },
+        { "", "", "", "", "", "", "", "", "" }
     };
 
 //private:

@@ -9,7 +9,7 @@
 #include "PluginEditor.h"
 
 #define keysHeight 100
-#define margin 20
+#define margin 10
 
 void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                                              std::function<void()> lambda,
@@ -31,7 +31,7 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (800, 600);
+    setSize (808, 561);
 
     // alter look and feel of knobs
     getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::red);
@@ -54,6 +54,7 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
 EnginineAudioProcessorEditor::~EnginineAudioProcessorEditor()
 {
     // MUST delete ALL parameter attachments
+    delete presetPA;
     delete volumePA;
 }
 
@@ -64,17 +65,17 @@ void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     g.setColour (juce::Colours::white);
-    g.setFont (juce::FontOptions (15.0f));
+    g.setFont (juce::FontOptions (13.0f));
 
     auto area = getLocalBounds();
     area.removeFromBottom(keysHeight);
     area = area.reduced(margin);
-    auto cWidth = area.getWidth() / 7.0f;
+    auto cWidth = area.getWidth() / 9.0f;
     auto cHeight = area.getHeight() / 3.0f;
     auto xOff = area.getX();
     auto yOff = area.getY();
 
-    for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+    for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
       auto name = sLayout[y][x];
       g.drawFittedText(name, x * cWidth + xOff, y * cHeight + yOff,
           cWidth, 15, juce::Justification::centredBottom, 1);
@@ -91,12 +92,12 @@ void EnginineAudioProcessorEditor::resized()
     auto area = getLocalBounds();
     keyboard.setBounds(area.removeFromBottom(keysHeight));
     area = area.reduced(margin);
-    auto cWidth = area.getWidth() / 7.0f;
+    auto cWidth = area.getWidth() / 9.0f;
     auto cHeight = area.getHeight() / 3.0f;
     auto xOff = area.getX();
     auto yOff = area.getY();
 
-    for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+    for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
       if(layout[y][x] != nullptr) layout[y][x]->setBounds(x * cWidth + 5 + xOff,
           y * cHeight + 25 + yOff, cWidth - 10, cHeight - 30);
     }

@@ -12,11 +12,11 @@ So I've dumped `KDevelop` and started using `Zed` (with `bear` to make the `comp
  - [X] Load/save state mechanism
  - [ ] Look and Feel
  - [ ] Audio Processing
- - [X] Layout Using Own Grid Mehtod
+ - [X] Layout Using Own Grid Mehtod (27 GUI)
  - [X] Keyboard
  - [ ] Simple MIDI out
- - [ ] Parameter presets
- - [ ] Parameter skew
+ - [X] Parameter Preset Mechanism
+ - [X] Parameter Skew Mechanism
  - [ ] SVG/vector background
  - [X] Zed/Bear build (if your home is `/home/jacko`)
 

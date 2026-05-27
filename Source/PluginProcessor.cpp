@@ -119,12 +119,12 @@ int EnginineAudioProcessor::getCurrentProgram()
 
 void EnginineAudioProcessor::setCurrentProgram (int index)
 {
-    for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+    for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
         if(layout[y][x] != nullptr) presets[(int)*savePreset][y][x] = **layout[y][x];
     }
     currentPreset = index;
 
-    for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+    for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
         if(layout[y][x] != nullptr)  **layout[y][x] = presets[currentPreset][y][x];
     }
 }
@@ -227,9 +227,9 @@ void EnginineAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // presets
     xml->setAttribute ("presetW", (double) *savePreset);
     xml->setAttribute ("presetR", (double) currentPreset);
-    for(int p = 0; p < 128; ++p) for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+    for(int p = 0; p < 128; ++p) for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
         if(layout[y][x] != nullptr)
-            xml->setAttribute("p" + juce::String(p * 27 + y * 7 + x), (double) presets[p][y][x]);
+            xml->setAttribute("p" + juce::String(p * 27 + y * 9 + x), (double) presets[p][y][x]);
     }
     copyXmlToBinary (*xml, destData);
 }
@@ -246,9 +246,9 @@ void EnginineAudioProcessor::setStateInformation (const void* data, int sizeInBy
             // presets
             *savePreset = (float)xml->getDoubleAttribute ("presetW", *savePreset);
             currentPreset = (float)xml->getDoubleAttribute ("presetR", currentPreset);
-            for(int p = 0; p < 128; ++p) for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+            for(int p = 0; p < 128; ++p) for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
                 if(layout[y][x] != nullptr) presets[p][y][x] =
-                    (float)xml->getDoubleAttribute("p" + juce::String(p * 27 + y * 7 + x), presets[p][y][x]);
+                    (float)xml->getDoubleAttribute("p" + juce::String(p * 27 + y * 9 + x), presets[p][y][x]);
             }
         }
     }
