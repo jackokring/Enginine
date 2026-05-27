@@ -34,7 +34,23 @@ EnginineAudioProcessor::EnginineAudioProcessor()
     auto decimals = juce::AudioParameterFloatAttributes()
         .withStringFromValueFunction ([] (auto x, auto) { return juce::String(floor(x * 1000) / 1000); });
     auto linpow = juce::NormalisableRange<float>(0.0f, 100.0f, 0.0f, 0.5f);
+
+    auto presetName = juce::AudioParameterFloatAttributes()
+        .withStringFromValueFunction([this] (auto x, auto) {
+          return getProgramName((int)x);
+        });
+    auto preset128 = juce::NormalisableRange<float>(0.0f, 127.0f, 1.0f);
     auto hearing = logRange(20.0f, 20000.0f);
+
+    addParameter (
+        savePreset = new juce::AudioParameterFloat (
+            { "savePreset", 1 }, // parameter ID, version
+            "Save As", // parameter name
+            preset128, // parameter range
+            0.0f, // default value
+            presetName // restrictions on print
+        )
+    );
 
     addParameter (
         volume = new juce::AudioParameterFloat (
@@ -98,13 +114,13 @@ int EnginineAudioProcessor::getNumPrograms()
 
 int EnginineAudioProcessor::getCurrentProgram()
 {
-    return currentPreset;
+    return (int)currentPreset;
 }
 
 void EnginineAudioProcessor::setCurrentProgram (int index)
 {
     for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
-        if(layout[y][x] != nullptr) presets[currentPreset][y][x] = **layout[y][x];
+        if(layout[y][x] != nullptr) presets[(int)*savePreset][y][x] = **layout[y][x];
     }
     currentPreset = index;
 
@@ -115,7 +131,7 @@ void EnginineAudioProcessor::setCurrentProgram (int index)
 
 const juce::String EnginineAudioProcessor::getProgramName (int index)
 {
-    return juce::String(luanames[currentPreset]);
+    return juce::String(luanames[index]);
 }
 
 void EnginineAudioProcessor::changeProgramName (int index, const juce::String& newName)
@@ -207,6 +223,10 @@ void EnginineAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // as intermediaries to make it easy to save and load complex data.
     std::unique_ptr<juce::XmlElement> xml (new juce::XmlElement ("EnginineState"));
     xml->setAttribute ("volume", (double) *volume);
+
+    // presets
+    xml->setAttribute ("presetW", (double) *savePreset);
+    xml->setAttribute ("presetR", (double) currentPreset);
     for(int p = 0; p < 128; ++p) for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
         if(layout[y][x] != nullptr)
             xml->setAttribute("p" + juce::String(p * 27 + y * 7 + x), (double) presets[p][y][x]);
@@ -222,6 +242,10 @@ void EnginineAudioProcessor::setStateInformation (const void* data, int sizeInBy
     if (xml.get() != nullptr) {
         if (xml->hasTagName ("EnginineState")) {
             *volume = (float) xml->getDoubleAttribute ("volume", *volume);
+
+            // presets
+            *savePreset = (float)xml->getDoubleAttribute ("presetW", *savePreset);
+            currentPreset = (float)xml->getDoubleAttribute ("presetR", currentPreset);
             for(int p = 0; p < 128; ++p) for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
                 if(layout[y][x] != nullptr) presets[p][y][x] =
                     (float)xml->getDoubleAttribute("p" + juce::String(p * 27 + y * 7 + x), presets[p][y][x]);

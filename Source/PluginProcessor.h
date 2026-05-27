@@ -57,6 +57,8 @@ public:
 //private:
     //==============================================================================
     juce::MidiKeyboardState keyState;
+    juce::AudioParameterFloat* savePreset;// not saved in presets
+    int currentPreset;
     juce::AudioParameterFloat* volume;
     float previousVolume;
 
@@ -67,7 +69,6 @@ public:
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
 
-    int currentPreset = 0;
     float presets[128][3][7] = {
         {//1
             {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},

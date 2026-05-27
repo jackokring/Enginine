@@ -5,6 +5,7 @@
   ==============================================================================*/
 
 #include "PluginProcessor.h"
+#include "juce_core/juce_core.h"
 #include "PluginEditor.h"
 
 #define keysHeight 100
@@ -38,6 +39,12 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     addAndMakeVisible(keyboard);
     keyboard.setMidiChannel(1);// int
     keyboard.setMidiChannelsToDisplay(1);// bit-mask
+
+    // presets
+    knob(presetSlider, [this] {
+      *audioProcessor.savePreset = (int)presetSlider.getValue();
+    }, audioProcessor.savePreset, presetPA);
+    presetSlider.setTextBoxIsEditable(false);
 
     knob(volumeSlider, [this] {
       *audioProcessor.volume = volumeSlider.getValue();

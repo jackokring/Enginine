@@ -8,6 +8,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "juce_audio_processors/juce_audio_processors.h"
 
 //==============================================================================
 /**
@@ -27,14 +28,14 @@ public:
               juce::SliderParameterAttachment*& pa);
 
     juce::Slider* layout[3][7] = {
-        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
+        { &presetSlider, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
 
     // for some reason the joined knob does not like retrieving the parameter's name
     juce::String sLayout[3][7] = {
-        { "", "", "", "", "", "", "Volume" },
+        { "Save In", "", "", "", "", "", "Volume" },
         { "", "", "", "", "", "", "" },
         { "", "", "", "", "", "", "" }
     };
@@ -43,6 +44,9 @@ public:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     EnginineAudioProcessor& audioProcessor;
+    juce::Slider presetSlider;
+    juce::SliderParameterAttachment *presetPA;
+
     juce::MidiKeyboardComponent keyboard;
     juce::Slider volumeSlider;
     juce::SliderParameterAttachment *volumePA;
