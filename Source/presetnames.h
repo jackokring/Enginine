@@ -1,0 +1,30 @@
+// header of lua lauch patch names for program changes
+// some random list from the internet with invalid one removed
+// it was well-made just after accurate
+const char* const luanames[] = {
+  "init",          "magic",    "testy",     "reflective", "fan",
+  "plain",         "fulfil",   "callous",   "door",       "cap",
+  "rotten",        "blur",     "agreeable", "black",      "identify",
+  "clam",          "horrible", "sulky",     "implore",    "quiet",
+  "uninterested",  "private",  "touch",     "reading",    "sock",
+  "peep",          "surprise", "mass",      "sand",       "tie",
+  "persuade",      "brainy",   "thought",   "canvas",     "test",
+  "nip",           "paste",    "person",    "malicious",  "abhorrent",
+  "ferry",         "squalid",  "loutish",   "languid",    "halting",
+  "avoid",         "liquid",   "stress",    "men",        "secure",
+  "vacuous",       "sidewalk", "sneeze",    "glove",      "press",
+  "treasure",      "converse", "scream",    "fertile",    "boast",
+  "choke",         "soggy",    "crook",     "basin",      "spray",
+  "inlay",         "lumpy",    "stupid",    "unadvised",  "huge",
+  "make",          "increase", "smooth",    "like",       "prosecute",
+  "paint",         "uncle",    "challenge", "approval",   "gainsay",
+  "shed",          "light",    "slim",      "copper",     "receive",
+  "cumbersome",    "read",     "melt",      "ray",        "locket",
+  "stiff",         "bind",     "check",     "ply",        "square",
+  "waggish",       "oatmeal",  "gorgeous",  "roomy",      "leg",
+  "attack",        "express",  "tomatoes",  "maddening",  "jittery",
+  "ride",          "convert",  "shirk",     "jam",        "draw",
+  "feel",          "cheerful", "square",    "berry",      "club",
+  "knowledgeable", "expand",   "spotted",   "smash",      "accurate",
+  "map",           "tax",      "resell",    "tasteless",  "dazzle",
+  "search",        "delicate", "flight"};

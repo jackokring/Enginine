@@ -6,8 +6,10 @@
 
 #pragma once
 
+#include "juce_audio_processors_headless/juce_audio_processors_headless.h"
 #include <JuceHeader.h>
 #include <JucePluginDefines.h>
+#include "presetnames.h"
 
 //==============================================================================
 /**
@@ -57,6 +59,28 @@ public:
     juce::MidiKeyboardState keyState;
     juce::AudioParameterFloat* volume;
     float previousVolume;
+
+    //==============================================================================
+    juce::AudioParameterFloat** layout[3][7] = {
+        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volume },
+        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
+        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
+    };
+
+    int currentPreset = 0;
+    float presets[128][3][7] = {
+        {//1
+            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+        },
+        {//2
+            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+        },
+
+    };
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnginineAudioProcessor)

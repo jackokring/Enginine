@@ -6,6 +6,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "juce_core/juce_core.h"
 
 template <typename ValueT>
 juce::NormalisableRange<ValueT> logRange (ValueT min, ValueT max)
@@ -88,28 +89,38 @@ double EnginineAudioProcessor::getTailLengthSeconds() const
     return 0.0;
 }
 
+//==============================================================================
 int EnginineAudioProcessor::getNumPrograms()
 {
-    return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
+    return 128;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
 int EnginineAudioProcessor::getCurrentProgram()
 {
-    return 0;
+    return currentPreset;
 }
 
 void EnginineAudioProcessor::setCurrentProgram (int index)
 {
+    for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+        if(layout[y][x] != nullptr) presets[currentPreset][y][x] = **layout[y][x];
+    }
+    currentPreset = index;
+
+    for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+        if(layout[y][x] != nullptr)  **layout[y][x] = presets[currentPreset][y][x];
+    }
 }
 
 const juce::String EnginineAudioProcessor::getProgramName (int index)
 {
-    return {};
+    return juce::String(luanames[currentPreset]);
 }
 
 void EnginineAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
+    // Not today
 }
 
 //==============================================================================
@@ -196,6 +207,10 @@ void EnginineAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // as intermediaries to make it easy to save and load complex data.
     std::unique_ptr<juce::XmlElement> xml (new juce::XmlElement ("EnginineState"));
     xml->setAttribute ("volume", (double) *volume);
+    for(int p = 0; p < 128; ++p) for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+        if(layout[y][x] != nullptr)
+            xml->setAttribute("p" + juce::String(p * 27 + y * 7 + x), (double) presets[p][y][x]);
+    }
     copyXmlToBinary (*xml, destData);
 }
 
@@ -203,10 +218,14 @@ void EnginineAudioProcessor::setStateInformation (const void* data, int sizeInBy
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
-    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
-    if (xmlState.get() != nullptr) {
-        if (xmlState->hasTagName ("EnginineState")) {
-            *volume = (float) xmlState->getDoubleAttribute ("volume", *volume);
+    std::unique_ptr<juce::XmlElement> xml (getXmlFromBinary (data, sizeInBytes));
+    if (xml.get() != nullptr) {
+        if (xml->hasTagName ("EnginineState")) {
+            *volume = (float) xml->getDoubleAttribute ("volume", *volume);
+            for(int p = 0; p < 128; ++p) for(int x = 0; x < 7; ++x) for(int y = 0; y < 3; ++y) {
+                if(layout[y][x] != nullptr) presets[p][y][x] =
+                    (float)xml->getDoubleAttribute("p" + juce::String(p * 27 + y * 7 + x), presets[p][y][x]);
+            }
         }
     }
 }
