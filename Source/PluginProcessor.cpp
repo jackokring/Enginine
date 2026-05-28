@@ -7,6 +7,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "juce_core/juce_core.h"
+#include "juce_gui_basics/juce_gui_basics.h"
 
 template <typename ValueT>
 juce::NormalisableRange<ValueT> logRange (ValueT min, ValueT max)
@@ -137,6 +138,9 @@ const juce::String EnginineAudioProcessor::getProgramName (int index)
 void EnginineAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
     // Not today
+    juce::NativeMessageBox::showMessageBoxAsync(juce::MessageBoxIconType::InfoIcon,
+        "Program Name Change",
+        "Sorry, " + getProgramName(index) + " is fixed and can't be changed to " + newName + ".");
 }
 
 //==============================================================================
