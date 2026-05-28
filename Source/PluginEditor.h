@@ -9,6 +9,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "juce_audio_processors/juce_audio_processors.h"
+#include "juce_gui_basics/juce_gui_basics.h"
 
 //==============================================================================
 /**
@@ -26,6 +27,7 @@ public:
               std::function<void()> lambda,
               juce::AudioParameterFloat* para,
               juce::SliderParameterAttachment*& pa);
+    juce::Colour UIColour(juce::LookAndFeel_V4::ColourScheme::UIColour colour);
 
     juce::Slider* layout[3][9] = {
         { &presetSlider, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
@@ -44,6 +46,7 @@ public:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     EnginineAudioProcessor& audioProcessor;
+    juce::LookAndFeel_V4 lookAndFeel;
     juce::Slider presetSlider;
     juce::SliderParameterAttachment *presetPA;
 

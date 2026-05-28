@@ -6,10 +6,11 @@
 
 #include "PluginProcessor.h"
 #include "juce_core/juce_core.h"
+#include "juce_gui_basics/juce_gui_basics.h"
 #include "PluginEditor.h"
 
 #define keysHeight 100
-#define margin 10
+#define margin 8
 
 void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                                              std::function<void()> lambda,
@@ -17,6 +18,7 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                                              juce::SliderParameterAttachment*& pa)
 {
   addAndMakeVisible (slider);
+  slider.setLookAndFeel(&lookAndFeel);
   slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
   slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 15);
   slider.onValueChange = lambda;
@@ -31,10 +33,11 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (808, 561);
+    setLookAndFeel(&lookAndFeel);
+    setSize (888, 561);
 
     // alter look and feel of knobs
-    getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::red);
+    lookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::red);
 
     addAndMakeVisible(keyboard);
     keyboard.setMidiChannel(1);// int
@@ -56,15 +59,22 @@ EnginineAudioProcessorEditor::~EnginineAudioProcessorEditor()
     // MUST delete ALL parameter attachments
     delete presetPA;
     delete volumePA;
+
+    // apparently it needs it to deallocate lookAndFeel
+    setLookAndFeel(nullptr);
+}
+
+juce::Colour EnginineAudioProcessorEditor::UIColour(juce::LookAndFeel_V4::ColourScheme::UIColour colour)
+{
+    return lookAndFeel.getCurrentColourScheme().getUIColour(colour);
 }
 
 //==============================================================================
 void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll (UIColour(juce::LookAndFeel_V4::ColourScheme::windowBackground));
 
-    g.setColour (juce::Colours::white);
     g.setFont (juce::FontOptions (13.0f));
 
     auto area = getLocalBounds();
@@ -77,9 +87,11 @@ void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
 
     for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
       auto name = sLayout[y][x];
+      g.setColour (UIColour(juce::LookAndFeel_V4::ColourScheme::defaultText));
       g.drawFittedText(name, x * cWidth + xOff, y * cHeight + yOff,
           cWidth, 15, juce::Justification::centredBottom, 1);
       //bounds
+      g.setColour (UIColour(juce::LookAndFeel_V4::ColourScheme::outline));
       g.drawRect(x * cWidth + xOff + 3, y * cHeight + 20 + yOff,
           cWidth - 6, cHeight - 20);
     }
