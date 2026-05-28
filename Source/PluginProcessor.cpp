@@ -232,8 +232,14 @@ void EnginineAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     xml->setAttribute ("presetW", (double) *savePreset);
     xml->setAttribute ("presetR", (double) currentPreset);
     for(int p = 0; p < 128; ++p) for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
-        if(layout[y][x] != nullptr)
-            xml->setAttribute("p" + juce::String(p * 27 + y * 9 + x), (double) presets[p][y][x]);
+        if(layout[y][x] != nullptr) {
+            if(layout[y][x] != &savePreset) {
+                xml->setAttribute("p" + juce::String(p * 27 + y * 9 + x), (double) presets[p][y][x]);
+            } else {
+                // savePreset layout, store preset index instead of value
+                xml->setAttribute("p" + juce::String(p * 27 + y * 9 + x), (double) p);
+            }
+        }
     }
     copyXmlToBinary (*xml, destData);
 }

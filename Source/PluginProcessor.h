@@ -64,7 +64,7 @@ public:
 
     //==============================================================================
     juce::AudioParameterFloat** layout[3][9] = {
-        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volume },
+        { &savePreset, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volume },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
