@@ -52,6 +52,7 @@ public:
 
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
+    void loadPresets();
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 //private:
@@ -69,19 +70,7 @@ public:
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
 
-    float presets[128][3][9] = {
-        {//1
-            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-        },
-        {//2
-            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-            {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-        },
-
-    };
+    float presets[128][3][9] = {};//zeros
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnginineAudioProcessor)

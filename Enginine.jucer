@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="TUQnia" name="Enginine" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" companyName="K Ring Technologies"
+              companyCopyright="(C) 2026 Simon Jackson" companyWebsite="www.kring.co.uk"
+              companyEmail="jacko@kring.co.uk" bundleIdentifier="uk.co.kring.Enginine"
+              pluginFormats="buildVST3" pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn">
   <MAINGROUP id="cW4zEM" name="Enginine">
+    <GROUP id="{74043C82-D549-EB4C-7F33-35004273753D}" name="Resources">
+      <FILE id="C2VdYz" name="presets.zlib" compile="0" resource="1" file="presets.zlib"/>
+    </GROUP>
     <GROUP id="{6C7857FD-DE52-A09E-3D6B-CDEE9AB64A5A}" name="Source">
       <FILE id="pRGD99" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>

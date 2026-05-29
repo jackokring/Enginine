@@ -5,6 +5,7 @@
   ==============================================================================*/
 
 #include "PluginProcessor.h"
+#include "BinaryData.h"
 #include "PluginEditor.h"
 #include "juce_core/juce_core.h"
 #include "juce_gui_basics/juce_gui_basics.h"
@@ -62,6 +63,8 @@ EnginineAudioProcessor::EnginineAudioProcessor()
             decimals.withLabel(" %") // restrictions on print
         )
     );
+
+    loadPresets(); // load manufacturer presets
 }
 
 EnginineAudioProcessor::~EnginineAudioProcessor()
@@ -123,10 +126,14 @@ void EnginineAudioProcessor::setCurrentProgram (int index)
     for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
         if(layout[y][x] != nullptr) presets[(int)*savePreset][y][x] = **layout[y][x];
     }
-    currentPreset = index;
 
+    currentPreset = index;
     for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
-        if(layout[y][x] != nullptr)  **layout[y][x] = presets[currentPreset][y][x];
+        if(layout[y][x] != nullptr) {
+            auto para = *layout[y][x];
+            // Normalization filter
+            *para = para->getNormalisableRange().snapToLegalValue(presets[currentPreset][y][x]);
+        }
     }
 }
 
@@ -242,6 +249,16 @@ void EnginineAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
         }
     }
     copyXmlToBinary (*xml, destData);
+}
+
+void EnginineAudioProcessor::loadPresets()
+{
+    // load binary resource embedded presets file
+    juce::MemoryInputStream stream(BinaryData::presets_zlib, BinaryData::presets_zlibSize, false);
+    juce::GZIPDecompressorInputStream decompress(stream);// zlib format
+    juce::MemoryBlock data;
+    decompress.readIntoMemoryBlock(data);
+    setStateInformation(data.getData(), data.getSize());
 }
 
 void EnginineAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
