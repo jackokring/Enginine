@@ -4,8 +4,10 @@
 
   ==============================================================================*/
 
+#include "BinaryData.h"
 #include "PluginProcessor.h"
 #include "juce_core/juce_core.h"
+#include "juce_graphics/juce_graphics.h"
 #include "juce_gui_basics/juce_gui_basics.h"
 #include "PluginEditor.h"
 
@@ -35,6 +37,9 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     // editor's size to whatever you need it to be.
     setLookAndFeel(&lookAndFeel);
     setSize (888, 561);
+
+    background = juce::ImageCache::getFromMemory(
+        BinaryData::background_png, BinaryData::background_pngSize);
 
     // alter look and feel of knobs
     lookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::red);
@@ -73,8 +78,9 @@ juce::Colour EnginineAudioProcessorEditor::UIColour(juce::LookAndFeel_V4::Colour
 void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (UIColour(juce::LookAndFeel_V4::ColourScheme::windowBackground));
-
+    //g.fillAll (UIColour(juce::LookAndFeel_V4::ColourScheme::windowBackground));
+    g.drawImageWithin(background, 0, 0, getWidth(), getHeight(),
+        juce::RectanglePlacement::stretchToFit);
     g.setFont (juce::FontOptions (13.0f));
 
     auto area = getLocalBounds();
@@ -104,6 +110,7 @@ void EnginineAudioProcessorEditor::resized()
     auto area = getLocalBounds();
     keyboard.setBounds(area.removeFromBottom(keysHeight));
     area = area.reduced(margin);
+
     auto cWidth = area.getWidth() / 9.0f;
     auto cHeight = area.getHeight() / 3.0f;
     auto xOff = area.getX();

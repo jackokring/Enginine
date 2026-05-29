@@ -51,6 +51,7 @@ public:
     juce::SliderParameterAttachment *presetPA;
 
     juce::MidiKeyboardComponent keyboard;
+    juce::Image background;
     juce::Slider volumeSlider;
     juce::SliderParameterAttachment *volumePA;
 
