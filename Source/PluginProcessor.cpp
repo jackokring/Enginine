@@ -156,7 +156,7 @@ void EnginineAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 
-    previousVolume = *volume;
+    previousVolume = *volume * 0.01;
 }
 
 void EnginineAudioProcessor::releaseResources()
@@ -210,8 +210,8 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // audio processing...
     {
         keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
-        buffer.applyGainRamp (0, buffer.getNumSamples(), previousVolume, *volume);
-        previousVolume = *volume;
+        buffer.applyGainRamp (0, buffer.getNumSamples(), previousVolume, *volume * 0.01);
+        previousVolume = *volume * 0.01;
     }
 }
 
