@@ -31,5 +31,11 @@ def compress_file(input_filename, output_filename, cleanXml):
 
 
 # Usage
-compress_file("../Documents/presets.xml", "presets.zlib", True)
-shutil.copyfile("../Documents/background.png", "background.png")
+compress_file("presets.xml", "presets.zlib", True)
+print(
+    "File presets.xml compressed to presets.zlib (presets.xml can be saved from the plugin)."
+)
+print(
+    "Edit background.xcf and save as background.png? (use gimp export or save as .png)."
+)
+# shutil.copyfile("background.png", "background.png")

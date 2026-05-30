@@ -18,7 +18,7 @@ So I've dumped `KDevelop` and started using `Zed` (with `bear` to make the `comp
  - [X] Parameter Preset Mechanism (`preset.zlib` packaging by `projucer` save)
  - [X] Python utility `makezlib.py` (`preset.xml` to `preset.zlib` conversion)
  - [X] Parameter Skew Mechanism
- - [ ] SVG/vector background
+ - [ ] Background
  - [X] Zed/Bear build (if your home is `/home/jacko`)
 
 ## Notes on Bear Setup
@@ -29,7 +29,7 @@ Then maybe `sudo apt install bear` (for the bear tool) and `bear -- make` instea
 within the `LinuxMakefile` directory. The settings of open terminals for me are project root (`git`),
 `LinuxMakefile` (`make`) and a final terminal open in `Builds/LinuxMakefile/build` (for `./Enginine` launching).
 
-The `JUCE` is in `~/JUCE` and `Enginine` is in `~/Enginine`. So only the hard codded `$HOME` path in the project might cause problems. Can't be helped as far as I've checked.
+The `JUCE` is in `~/JUCE` and `Enginine` is in `~/Enginine`. So only the hard codded `$HOME` path in the project might cause problems. Can't be helped as far as I've checked. It's why you need to run `bear` make the soft link.
 
 I'll work more on this setup later on as the project evolves.
 
