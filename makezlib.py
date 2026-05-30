@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import shutil
 import zlib
 
 
@@ -33,12 +32,11 @@ def compress_file(input_filename, output_filename, cleanXml):
 # Usage
 compress_file("presets.xml", "presets.zlib", True)
 print(
-    "File presets.xml compressed to presets.zlib (presets.xml can be saved from the plugin)."
+    "File presets.xml compressed to presets.zlib! (presets.xml can be saved from the plugin)."
 )
 print(
     "Edit background.xcf and save as background.png? (use gimp export or save as .png)."
 )
 print(
-    "Open and save project with projucer (rebuild the binary presets and background resources)."
+    "Open and save project with projucer? (rebuild the binary presets and background resources)."
 )
-# shutil.copyfile("background.png", "background.png")
