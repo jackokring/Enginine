@@ -38,4 +38,7 @@ print(
 print(
     "Edit background.xcf and save as background.png? (use gimp export or save as .png)."
 )
+print(
+    "Open and save project with projucer (rebuild the binary presets and background resources)."
+)
 # shutil.copyfile("background.png", "background.png")

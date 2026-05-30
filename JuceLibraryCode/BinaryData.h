@@ -9,7 +9,7 @@
 namespace BinaryData
 {
     extern const char*   background_png;
-    const int            background_pngSize = 636203;
+    const int            background_pngSize = 581549;
 
     extern const char*   presets_zlib;
     const int            presets_zlibSize = 438;
