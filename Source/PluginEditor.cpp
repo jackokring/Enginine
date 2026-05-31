@@ -41,7 +41,7 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     background = juce::ImageCache::getFromMemory(
         BinaryData::background_png, BinaryData::background_pngSize);
 
-    // main colour scheme
+    // TODO: main colour scheme
     setUIColour(juce::LookAndFeel_V4::ColourScheme::windowBackground, juce::Colours::black);
     setUIColour(juce::LookAndFeel_V4::ColourScheme::widgetBackground, juce::Colours::black);
     setUIColour(juce::LookAndFeel_V4::ColourScheme::menuBackground, juce::Colours::black);
@@ -52,7 +52,7 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     setUIColour(juce::LookAndFeel_V4::ColourScheme::highlightedFill, juce::Colours::black);
     setUIColour(juce::LookAndFeel_V4::ColourScheme::menuText, juce::Colours::black);
 
-    // alter look and feel of knobs
+    // TODO: alter look and feel of knobs
     lookAndFeel.setColour(juce::Slider::backgroundColourId, juce::Colours::black);
     lookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::red);
     lookAndFeel.setColour(juce::Slider::trackColourId, juce::Colours::red);

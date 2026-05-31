@@ -76,6 +76,19 @@ public:
 
     float presets[128][3][9] = {};//zeros
 
+    // MIDI CC 14 bit controller numbers n and n+32
+    // 2 - Carla Dry/Wet
+    // 5 - Portamento (has duplicate on 84 [siren?])
+    // 6 - NRPN, RPN Data Entry (kind of last selected drift [debug?])
+    // 7 - Carla Volume
+    // 8 - Carla Balance
+    // So 27 left
+    int cc[3][9] = {
+        { 0, 1, 3, 4, 9, 10, 11, 12, 13 },
+        { 14, 15, 16, 17, 18, 19, 20, 21, 22 },
+        { 23, 24, 25, 26, 27, 28, 29, 30, 31 }
+    };
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnginineAudioProcessor)
 };
