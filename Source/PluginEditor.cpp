@@ -45,22 +45,25 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     setUIColour(juce::LookAndFeel_V4::ColourScheme::windowBackground, juce::Colours::black);
     setUIColour(juce::LookAndFeel_V4::ColourScheme::widgetBackground, juce::Colours::black);
     setUIColour(juce::LookAndFeel_V4::ColourScheme::menuBackground, juce::Colours::black);
-    setUIColour(juce::LookAndFeel_V4::ColourScheme::outline, juce::Colours::black);
-    setUIColour(juce::LookAndFeel_V4::ColourScheme::defaultText, juce::Colours::black);
-    setUIColour(juce::LookAndFeel_V4::ColourScheme::defaultFill, juce::Colours::black);
-    setUIColour(juce::LookAndFeel_V4::ColourScheme::highlightedText, juce::Colours::black);
-    setUIColour(juce::LookAndFeel_V4::ColourScheme::highlightedFill, juce::Colours::black);
-    setUIColour(juce::LookAndFeel_V4::ColourScheme::menuText, juce::Colours::black);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::outline, juce::Colours::red);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::defaultText, juce::Colours::cyan);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::defaultFill, juce::Colours::cyan);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::highlightedText, juce::Colours::yellow);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::highlightedFill, juce::Colours::yellow);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::menuText, juce::Colours::green);
 
     // TODO: alter look and feel of knobs
     lookAndFeel.setColour(juce::Slider::backgroundColourId, juce::Colours::black);
-    lookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::red);
+    // pointer colour
+    lookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::white);
     lookAndFeel.setColour(juce::Slider::trackColourId, juce::Colours::red);
-    lookAndFeel.setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::red);
+    // on colour
+    lookAndFeel.setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::green);
+    // off colour
     lookAndFeel.setColour(juce::Slider::rotarySliderOutlineColourId, juce::Colours::red);
-    lookAndFeel.setColour(juce::Slider::textBoxTextColourId, juce::Colours::red);
+    lookAndFeel.setColour(juce::Slider::textBoxTextColourId, juce::Colours::cyan);
     lookAndFeel.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::black);
-    lookAndFeel.setColour(juce::Slider::textBoxHighlightColourId, juce::Colours::red);
+    lookAndFeel.setColour(juce::Slider::textBoxHighlightColourId, juce::Colours::blue);
     lookAndFeel.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::red);
 
     addAndMakeVisible(keyboard);
