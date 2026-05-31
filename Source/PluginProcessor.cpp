@@ -209,19 +209,17 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
-    {
-        keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
-        juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> smooth(previousVolume);
-        smooth.setTargetValue(*volume * 0.01);
-        auto chans = buffer.getNumChannels();
-        auto writes = buffer.getArrayOfWritePointers();
-        for(int s = buffer.getNumSamples(); s > 0; --s) {
-            for (int i = 0; i < chans; ++i) {
-                writes[i][s - 1] *= smooth.getNextValue();
-            }
+    keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> smooth(previousVolume);
+    smooth.setTargetValue(*volume * 0.01);
+    auto chans = buffer.getNumChannels();
+    auto writes = buffer.getArrayOfWritePointers();
+    for(int s = buffer.getNumSamples(); s > 0; --s) {
+        for (int i = 0; i < chans; ++i) {
+            writes[i][s - 1] *= smooth.getNextValue();
         }
-        previousVolume = smooth.getCurrentValue();
     }
+    previousVolume = smooth.getCurrentValue();
 }
 
 //==============================================================================
