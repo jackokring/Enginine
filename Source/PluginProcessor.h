@@ -83,13 +83,14 @@ public:
     // 7 - Carla Volume
     // 8 - Carla Balance
     // So 27 left
+    // parameter to MIDI CC
     int cc[3][9] = {
         { 0, 1, 3, 4, 9, 10, 11, 12, 13 },
         { 14, 15, 16, 17, 18, 19, 20, 21, 22 },
         { 23, 24, 25, 26, 27, 28, 29, 30, 31 }
     };
 
-    // a null dump target for MIDI CC parameters
+    // a null dump target for MIDI CC to parameter
     juce::AudioParameterFloat* noop;
     juce::AudioParameterFloat** icc[32] = {
         &noop, &noop, &noop, &noop, &noop, &noop, &noop, &noop,

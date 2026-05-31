@@ -10,7 +10,7 @@ So I've dumped `KDevelop` and started using `Zed` (with `bear` to make the `comp
  - [X] Basic audio pass volume
  - [X] ParameterAttachment mechanism (for visual updates on parameter change)
  - [X] Load/save state mechanism
- - [ ] Look and Feel
+ - [X] Look and Feel
  - [ ] Audio Processing
  - [X] Layout Using Own Grid Mehtod (27 GUI)
  - [X] Keyboard
@@ -18,8 +18,9 @@ So I've dumped `KDevelop` and started using `Zed` (with `bear` to make the `comp
  - [X] Parameter Preset Mechanism (`preset.zlib` packaging by `projucer` save)
  - [X] Python utility `makezlib.py` (`preset.xml` to `preset.zlib` conversion)
  - [X] Parameter Skew Mechanism
- - [ ] Background
+ - [X] Background
  - [X] Zed/Bear build (if your home is `/home/jacko`)
+ - [ ] Hopefully some cool sounding stuff
 
 ## Notes on Bear Setup
 
