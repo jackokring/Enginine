@@ -37,7 +37,7 @@ public:
 
     // for some reason the joined knob does not like retrieving the parameter's name
     juce::String sLayout[3][9] = {
-        { "Save In", "", "", "", "", "", "", "", "Volume" },
+        { "Save In", "Hi Pass", "Boost", "Lo Pass", "Rez", "Warm", "Split", "Trim", "Volume" },
         { "", "", "", "", "", "", "", "", "" },
         { "", "", "", "", "", "", "", "", "" }
     };
