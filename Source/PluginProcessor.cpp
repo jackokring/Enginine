@@ -212,12 +212,13 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     {
         keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
         juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> smooth(previousVolume);
+        smooth.setTargetValue(*volume * 0.01);
         auto chans = buffer.getNumChannels();
         auto writes = buffer.getArrayOfWritePointers();
-        for (int i = 0; i < chans; ++i) {
-            smooth.setCurrentAndTargetValue(previousVolume);// second do, but saves abiguity
-            smooth.setTargetValue(*volume * 0.01);
-            smooth.applyGain(writes[i], buffer.getNumSamples());
+        for(int s = buffer.getNumSamples(); s > 0; --s) {
+            for (int i = 0; i < chans; ++i) {
+                writes[i][s - 1] *= smooth.getCurrentValue();
+            }
         }
         previousVolume = smooth.getCurrentValue();
     }
