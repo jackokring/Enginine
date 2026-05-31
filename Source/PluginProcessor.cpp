@@ -217,8 +217,7 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         auto writes = buffer.getArrayOfWritePointers();
         for(int s = buffer.getNumSamples(); s > 0; --s) {
             for (int i = 0; i < chans; ++i) {
-                writes[i][s - 1] *= smooth.getCurrentValue();
-                smooth.getNextValue();
+                writes[i][s - 1] *= smooth.getNextValue();
             }
         }
         previousVolume = smooth.getCurrentValue();
