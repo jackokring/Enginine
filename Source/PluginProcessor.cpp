@@ -9,6 +9,7 @@
 #include "PluginEditor.h"
 #include "juce_audio_basics/juce_audio_basics.h"
 #include "juce_core/juce_core.h"
+#include "juce_dsp/juce_dsp.h"
 #include "juce_gui_basics/juce_gui_basics.h"
 
 template <typename ValueT>
@@ -31,7 +32,8 @@ EnginineAudioProcessor::EnginineAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+    over(2, 2, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR)
 #endif
 {
     auto decimals = juce::AudioParameterFloatAttributes()
@@ -156,8 +158,10 @@ void EnginineAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    smoothVol.setCurrentAndTargetValue(*volume * 0.01);
+    smoothVol.reset(sampleRate, 0.05f); // 50ms ramp
 
-    previousVolume = *volume * 0.01;
+    over.initProcessing(samplesPerBlock);
 }
 
 void EnginineAudioProcessor::releaseResources()
@@ -194,6 +198,9 @@ bool EnginineAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts)
 
 void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    // disable denormals to avoid numerical instability in audio processing
+    // I assume it's in the constructor to set a flag
+    // I hope an -O3 won't break it, but then again fast, fast
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -210,16 +217,26 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
     keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
-    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> smooth(previousVolume);
-    smooth.setTargetValue(*volume * 0.01);
+
+    over.reset();
+    juce::dsp::AudioBlock<float> block(buffer);
+    auto signal = over.processSamplesUp(block);
+    //=======================================================================
+    // current set to 4* oversample on signal
+
+
+    //=======================================================================
+    // downsample to output block and voulume set
+    over.processSamplesDown(block);
+
+    smoothVol.setTargetValue(*volume * 0.01);
     auto chans = buffer.getNumChannels();
     auto writes = buffer.getArrayOfWritePointers();
     for(int s = buffer.getNumSamples(); s > 0; --s) {
         for (int i = 0; i < chans; ++i) {
-            writes[i][s - 1] *= smooth.getNextValue();
+            writes[i][s - 1] *= smoothVol.getNextValue();
         }
     }
-    previousVolume = smooth.getCurrentValue();
 }
 
 //==============================================================================

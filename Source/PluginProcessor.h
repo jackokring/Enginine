@@ -58,10 +58,14 @@ public:
 //private:
     //==============================================================================
     juce::MidiKeyboardState keyState;
+
     juce::AudioParameterFloat* savePreset;// not saved in presets
     int currentPreset;
+
     juce::AudioParameterFloat* volume;
-    float previousVolume;
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> smoothVol;
+
+    juce::dsp::Oversampling<float> over;
 
     //==============================================================================
     juce::AudioParameterFloat** layout[3][9] = {
