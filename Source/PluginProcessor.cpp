@@ -7,6 +7,7 @@
 #include "PluginProcessor.h"
 #include "BinaryData.h"
 #include "PluginEditor.h"
+#include "juce_audio_basics/juce_audio_basics.h"
 #include "juce_core/juce_core.h"
 #include "juce_gui_basics/juce_gui_basics.h"
 
@@ -210,8 +211,15 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // audio processing...
     {
         keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
-        buffer.applyGainRamp (0, buffer.getNumSamples(), previousVolume, *volume * 0.01);
-        previousVolume = *volume * 0.01;
+        juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> smooth(previousVolume);
+        auto chans = buffer.getNumChannels();
+        auto writes = buffer.getArrayOfWritePointers();
+        for (int i = 0; i < chans; ++i) {
+            smooth.setCurrentAndTargetValue(previousVolume);// second do, but saves abiguity
+            smooth.setTargetValue(*volume * 0.01);
+            smooth.applyGain(writes[i], buffer.getNumSamples());
+        }
+        previousVolume = smooth.getCurrentValue();
     }
 }
 
