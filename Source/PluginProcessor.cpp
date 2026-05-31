@@ -138,6 +138,7 @@ void EnginineAudioProcessor::setCurrentProgram (int index)
             *para = para->getNormalisableRange().snapToLegalValue(presets[currentPreset][y][x]);
         }
     }
+    *savePreset = index;
 }
 
 const juce::String EnginineAudioProcessor::getProgramName (int index)

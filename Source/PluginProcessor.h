@@ -69,7 +69,7 @@ public:
 
     //==============================================================================
     juce::AudioParameterFloat** layout[3][9] = {
-        { &savePreset, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volume },
+        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volume },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
@@ -88,6 +88,10 @@ public:
         { 14, 15, 16, 17, 18, 19, 20, 21, 22 },
         { 23, 24, 25, 26, 27, 28, 29, 30, 31 }
     };
+
+    int midiChannel = 1;
+    float transpose = 0.0f;
+    float tempoNoSync = 120.0f;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnginineAudioProcessor)
