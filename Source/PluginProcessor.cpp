@@ -36,6 +36,7 @@ EnginineAudioProcessor::EnginineAudioProcessor()
     over(2, 2, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR)
 #endif
 {
+    noop = new juce::AudioParameterFloat({ "noop", 1 }, "NoOp", 0.0f, 1.0f, 0.0f);
     auto decimals = juce::AudioParameterFloatAttributes()
         .withStringFromValueFunction ([] (auto x, auto) { return juce::String(floor(x * 1000) / 1000); });
     auto linpow = juce::NormalisableRange<float>(0.0f, 100.0f, 0.0f, 0.5f);
@@ -72,6 +73,7 @@ EnginineAudioProcessor::EnginineAudioProcessor()
 
 EnginineAudioProcessor::~EnginineAudioProcessor()
 {
+    delete noop;
 }
 
 //==============================================================================

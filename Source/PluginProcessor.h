@@ -89,6 +89,15 @@ public:
         { 23, 24, 25, 26, 27, 28, 29, 30, 31 }
     };
 
+    // a null dump target for MIDI CC parameters
+    juce::AudioParameterFloat* noop;
+    juce::AudioParameterFloat** icc[32] = {
+        &noop, &noop, &noop, &noop, &noop, &noop, &noop, &noop,
+        &noop, &noop, &noop, &noop, &noop, &noop, &noop, &noop,
+        &noop, &noop, &noop, &noop, &noop, &noop, &noop, &noop,
+        &noop, &noop, &noop, &noop, &noop, &noop, &noop, &noop
+    };
+
     int midiChannel = 1;
     float transpose = 0.0f;
     float tempoNoSync = 120.0f;
