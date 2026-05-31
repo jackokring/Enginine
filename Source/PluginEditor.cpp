@@ -41,8 +41,27 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     background = juce::ImageCache::getFromMemory(
         BinaryData::background_png, BinaryData::background_pngSize);
 
+    // main colour scheme
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::windowBackground, juce::Colours::black);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::widgetBackground, juce::Colours::black);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::menuBackground, juce::Colours::black);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::outline, juce::Colours::black);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::defaultText, juce::Colours::black);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::defaultFill, juce::Colours::black);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::highlightedText, juce::Colours::black);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::highlightedFill, juce::Colours::black);
+    setUIColour(juce::LookAndFeel_V4::ColourScheme::menuText, juce::Colours::black);
+
     // alter look and feel of knobs
+    lookAndFeel.setColour(juce::Slider::backgroundColourId, juce::Colours::black);
     lookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::red);
+    lookAndFeel.setColour(juce::Slider::trackColourId, juce::Colours::red);
+    lookAndFeel.setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::red);
+    lookAndFeel.setColour(juce::Slider::rotarySliderOutlineColourId, juce::Colours::red);
+    lookAndFeel.setColour(juce::Slider::textBoxTextColourId, juce::Colours::red);
+    lookAndFeel.setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::black);
+    lookAndFeel.setColour(juce::Slider::textBoxHighlightColourId, juce::Colours::red);
+    lookAndFeel.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::red);
 
     addAndMakeVisible(keyboard);
     keyboard.setMidiChannel(1);// int
@@ -52,7 +71,8 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     knob(presetSlider, [this] {
       *audioProcessor.savePreset = (int)presetSlider.getValue();
     }, audioProcessor.savePreset, presetPA);
-    presetSlider.setTextBoxIsEditable(false);
+    presetSlider.setTextBoxIsEditable(false);// TODO: just a name?
+    // maybe this is where an e-mail goes ...
 
     knob(volumeSlider, [this] {
       *audioProcessor.volume = volumeSlider.getValue();
@@ -72,6 +92,12 @@ EnginineAudioProcessorEditor::~EnginineAudioProcessorEditor()
 juce::Colour EnginineAudioProcessorEditor::UIColour(juce::LookAndFeel_V4::ColourScheme::UIColour colour)
 {
     return lookAndFeel.getCurrentColourScheme().getUIColour(colour);
+}
+
+void EnginineAudioProcessorEditor::setUIColour(
+    juce::LookAndFeel_V4::ColourScheme::UIColour colour, juce::Colour shade)
+{
+    lookAndFeel.getCurrentColourScheme().setUIColour(colour, shade);
 }
 
 //==============================================================================

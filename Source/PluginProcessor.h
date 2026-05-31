@@ -60,12 +60,12 @@ public:
     juce::MidiKeyboardState keyState;
 
     juce::AudioParameterFloat* savePreset;// not saved in presets
-    int currentPreset;
+    int currentPreset;// apparently the DAW might not know how to set state correctly
 
     juce::AudioParameterFloat* volume;
     juce::SmoothedValue<float, juce::ValueSmoothingTypes::Multiplicative> smoothVol;
 
-    juce::dsp::Oversampling<float> over;
+    juce::dsp::Oversampling<float> over;// the oversampler
 
     //==============================================================================
     juce::AudioParameterFloat** layout[3][9] = {

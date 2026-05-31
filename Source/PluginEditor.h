@@ -28,6 +28,8 @@ public:
               juce::AudioParameterFloat* para,
               juce::SliderParameterAttachment*& pa);
     juce::Colour UIColour(juce::LookAndFeel_V4::ColourScheme::UIColour colour);
+    void setUIColour(
+        juce::LookAndFeel_V4::ColourScheme::UIColour colour, juce::Colour shade);
 
     juce::Slider* layout[3][9] = {
         { &presetSlider, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
@@ -47,11 +49,13 @@ public:
     // access the processor object that created it.
     EnginineAudioProcessor& audioProcessor;
     juce::LookAndFeel_V4 lookAndFeel;
-    juce::Slider presetSlider;
-    juce::SliderParameterAttachment *presetPA;
-
     juce::MidiKeyboardComponent keyboard;
     juce::Image background;
+
+    //================================================================
+    // sliders and PAs
+    juce::Slider presetSlider;
+    juce::SliderParameterAttachment *presetPA;
     juce::Slider volumeSlider;
     juce::SliderParameterAttachment *volumePA;
 
