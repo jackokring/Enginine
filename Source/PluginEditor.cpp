@@ -18,16 +18,30 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                                              std::function<void()> lambda,
                                              juce::AudioParameterFloat* para,
                                              juce::SliderParameterAttachment*& pa,
-                                             bool editable = true)
+                                             bool editable)
 {
   addAndMakeVisible (slider);
   slider.setLookAndFeel(&lookAndFeel);
   slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
   slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 15);
+  // TODO: MIDI out CC
   slider.onValueChange = lambda;
   slider.setTextValueSuffix (para->getLabel());
   slider.setTextBoxIsEditable(editable);
   pa = new juce::SliderParameterAttachment(*para, slider);
+  // tooltip setup
+  auto name = slider.getName();
+  for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
+      if(layout[y][x] == &slider) {
+          auto ccNum = "CC " + juce::String(audioProcessor.cc[x][y]);
+          if(audioProcessor.presetParas[y][x] == nullptr) {
+              ccNum = "(" + ccNum + ")";
+          }
+          name = name + " " + ccNum;
+          slider.setTooltip(name);
+          break;
+      }
+   }
 }
 
 //==============================================================================
