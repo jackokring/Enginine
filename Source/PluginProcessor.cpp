@@ -245,6 +245,14 @@ bool EnginineAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts)
 }
 #endif
 
+void process(juce::dsp::AudioBlock<float> signal) {
+    // dsp code
+}
+
+void midi(juce::MidiMessage& msg) {
+    // midi code
+}
+
 void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     // disable denormals to avoid numerical instability in audio processing
@@ -272,7 +280,16 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     auto signal = over.processSamplesUp(block);
     //=======================================================================
     // current set to 4* oversample on signal
-
+    auto num = signal.getNumSamples() * 4;// oversampling
+    size_t begin = 0;
+    for(auto m: midiMessages) {
+        auto msg = m.getMessage();
+        auto upto = m.samplePosition * 4;// oversampling
+        process(signal.getSubBlock(begin, upto - begin));
+        begin = upto;
+        midi(msg);
+    }
+    process(signal.getSubBlock(begin, num - begin));
 
     //=======================================================================
     // downsample to output block and voulume set
