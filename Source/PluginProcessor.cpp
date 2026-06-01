@@ -8,6 +8,7 @@
 #include "BinaryData.h"
 #include "PluginEditor.h"
 #include "juce_audio_basics/juce_audio_basics.h"
+#include "juce_audio_processors_headless/juce_audio_processors_headless.h"
 #include "juce_core/juce_core.h"
 #include "juce_dsp/juce_dsp.h"
 #include "juce_gui_basics/juce_gui_basics.h"
@@ -36,6 +37,7 @@ EnginineAudioProcessor::EnginineAudioProcessor()
     over(2, 2, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR)
 #endif
 {
+    // MIDI CC mappings
     // dynamic inverse for maintainance consistency
     noop = new juce::AudioParameterFloat({ "noop", 1 }, "NoOp", 0.0f, 1.0f, 0.0f);
     for(int i = 0; i < 32; i++){
@@ -52,17 +54,29 @@ EnginineAudioProcessor::EnginineAudioProcessor()
             }
         }
     }
+
+    //=============================================================================
+    // varoius parameter specifications for parameter typing
+    // 3 decimal places
     auto decimals = juce::AudioParameterFloatAttributes()
         .withStringFromValueFunction ([] (auto x, auto) { return juce::String(floor(x * 1000) / 1000); });
-    auto linpow = juce::NormalisableRange<float>(0.0f, 100.0f, 0.0f, 0.5f);
-
+    auto natural = juce::AudioParameterFloatAttributes()
+        .withStringFromValueFunction ([] (auto x, auto) { return juce::String((int)floor(x)); });
+    // preset list
     auto presetName = juce::AudioParameterFloatAttributes()
         .withStringFromValueFunction([this] (auto x, auto) {
           return getProgramName((int)x);
         });
+
+    // varoius normalized ranges for parameter typing
+    // power is signal squared so in linear power the range is skewed
+    auto linpow = juce::NormalisableRange<float>(0.0f, 100.0f, 0.0f, 0.5f);
     auto preset128 = juce::NormalisableRange<float>(0.0f, 127.0f, 1.0f);
+    auto nibble = juce::NormalisableRange<float>(1.0f, 16.0f, 1.0f);
     auto hearing = logRange(20.0f, 20000.0f);
 
+    //=============================================================================
+    // parameters of the plugin
     addParameter (
         savePreset = new juce::AudioParameterFloat (
             { "savePreset", 1 }, // parameter ID, version
@@ -83,6 +97,18 @@ EnginineAudioProcessor::EnginineAudioProcessor()
         )
     );
 
+    addParameter(
+        midiChannel = new juce::AudioParameterFloat (
+            { "midiChannel", 1 },
+            "MIDI Chan",
+            nibble, // parameter range
+            1.0f, // default value
+            natural // restrictions on print
+        )
+    );
+
+    //=============================================================================
+    // anything else last?
     loadPresets(); // load manufacturer presets
 }
 

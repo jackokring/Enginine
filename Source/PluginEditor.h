@@ -34,7 +34,7 @@ public:
     // front panel slider layout
     juce::Slider* layout[3][9] = {
         { &presetSlider, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
-        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
+        { &midiChannelSlider, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
 
@@ -42,7 +42,7 @@ public:
     // for some reason the joined knob does not like retrieving the parameter's name
     juce::String sLayout[3][9] = {
         { "Save In", "Hi Pass", "Boost", "Lo Pass", "Rez", "Warm", "Split", "Trim", "Volume" },
-        { "", "", "", "", "", "", "", "", "" },
+        { "MIDI Chan", "", "", "", "", "", "", "", "" },
         { "", "", "", "", "", "", "", "", "" }
     };
 
@@ -60,6 +60,8 @@ public:
     juce::SliderParameterAttachment *presetPA;
     juce::Slider volumeSlider;
     juce::SliderParameterAttachment *volumePA;
+    juce::Slider midiChannelSlider;
+    juce::SliderParameterAttachment *midiChannelPA;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnginineAudioProcessorEditor)
 };

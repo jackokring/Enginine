@@ -67,12 +67,19 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     lookAndFeel.setColour(juce::Slider::textBoxOutlineColourId, juce::Colours::red);
 
     addAndMakeVisible(keyboard);
-    keyboard.setMidiChannel(1);// int
-    keyboard.setMidiChannelsToDisplay(1);// bit-mask
+
+    // all made visible in the knod function
+    // MIDI channel
+    knob(midiChannelSlider, [this] {
+        int chan = (int)midiChannelSlider.getValue();
+        keyboard.setMidiChannel(chan);// int
+        keyboard.setMidiChannelsToDisplay(1 << (chan - 1));// bit-mask
+        *audioProcessor.midiChannel = chan;
+    }, audioProcessor.midiChannel, midiChannelPA);
 
     // presets
     knob(presetSlider, [this] {
-      *audioProcessor.savePreset = (int)presetSlider.getValue();
+        *audioProcessor.savePreset = (int)presetSlider.getValue();
     }, audioProcessor.savePreset, presetPA);
     presetSlider.setTextBoxIsEditable(false);// TODO: just a name?
     // maybe this is where an e-mail goes ...

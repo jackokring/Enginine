@@ -97,7 +97,7 @@ public:
     juce::AudioParameterFloat* noop;
     juce::AudioParameterFloat** icc[32];
 
-    int midiChannel = 1;
+    juce::AudioParameterFloat* midiChannel;
     float transpose = 0.0f;
     float tempoNoSync = 120.0f;
 
