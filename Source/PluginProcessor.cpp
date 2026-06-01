@@ -245,12 +245,89 @@ bool EnginineAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts)
 }
 #endif
 
-void process(juce::dsp::AudioBlock<float> signal) {
+void EnginineAudioProcessor::process(juce::dsp::AudioBlock<float> signal) {
     // dsp code
 }
 
-void midi(juce::MidiMessage& msg) {
+void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
     // midi code
+    if(msg.isForChannel(*midiChannel)) {
+        // controller
+        if(msg.isController()) {
+            int controller = msg.getControllerNumber();
+            float value = msg.getControllerValue();
+
+            return;
+        }
+        if(msg.isPitchWheel()) {
+            int wheel = msg.getPitchWheelValue();
+
+            return;
+        }
+        // notes
+        if(msg.isChannelPressure()) {
+            int pressure = msg.getChannelPressureValue();
+
+            return;
+        }
+        if(msg.isAftertouch()) {
+            int note = msg.getNoteNumber();
+            int pressure = msg.getAfterTouchValue();
+
+            return;
+        }
+        if(msg.isNoteOn()) {
+            int note = msg.getNoteNumber();
+            float velocity = msg.getFloatVelocity();
+
+            return;
+        }
+        if(msg.isNoteOff()) {
+            int note = msg.getNoteNumber();
+
+            return;
+        }
+        // process kill notes
+        if(msg.isAllNotesOff()) {
+            return;
+        }
+        if(msg.isAllSoundOff()) {
+            return;
+        }
+        if(msg.isResetAllControllers()) {
+            return;
+        }
+        // preset change
+        if(msg.isProgramChange()) {
+            int program = msg.getProgramChangeNumber();
+            setCurrentProgram(program);
+            return;
+        }
+    }
+    // clocking
+    if(msg.isMidiClock()) {
+        return;
+    }
+    if(msg.isMidiStart()) {
+        return;
+    }
+    if(msg.isMidiStop()) {
+        return;
+    }
+    if(msg.isMidiContinue()) {
+        return;
+    }
+    if(msg.isSongPositionPointer()) {
+        return;
+    }
+    // watchdog
+    if(msg.isActiveSense()) {
+        return;
+    }
+    // system exclusive
+    if(msg.isSysEx()) {
+        return;
+    }
 }
 
 void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)

@@ -30,6 +30,8 @@ public:
    #endif
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+    void process(juce::dsp::AudioBlock<float> signal);
+    void midi(juce::MidiMessage& msg);
 
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
