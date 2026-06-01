@@ -68,12 +68,15 @@ public:
     juce::dsp::Oversampling<float> over;// the oversampler
 
     //==============================================================================
-    juce::AudioParameterFloat** layout[3][9] = {
+    // dump these to XML when a preset save happens
+    juce::AudioParameterFloat** presetParas[3][9] = {
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volume },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
 
+    //==============================================================================
+    // MIDI things
     float presets[128][3][9] = {};//zeros
 
     // MIDI CC 14 bit controller numbers n and n+32
@@ -92,12 +95,7 @@ public:
 
     // a null dump target for MIDI CC to parameter
     juce::AudioParameterFloat* noop;
-    juce::AudioParameterFloat** icc[32] = {
-        &noop, &noop, &noop, &noop, &noop, &noop, &noop, &noop,
-        &noop, &noop, &noop, &noop, &noop, &noop, &noop, &noop,
-        &noop, &noop, &noop, &noop, &noop, &noop, &noop, &noop,
-        &noop, &noop, &noop, &noop, &noop, &noop, &noop, &noop
-    };
+    juce::AudioParameterFloat** icc[32];
 
     int midiChannel = 1;
     float transpose = 0.0f;

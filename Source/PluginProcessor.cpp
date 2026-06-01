@@ -36,7 +36,22 @@ EnginineAudioProcessor::EnginineAudioProcessor()
     over(2, 2, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR)
 #endif
 {
+    // dynamic inverse for maintainance consistency
     noop = new juce::AudioParameterFloat({ "noop", 1 }, "NoOp", 0.0f, 1.0f, 0.0f);
+    for(int i = 0; i < 32; i++){
+        icc[i] = &noop;
+    }
+    for(int x = 0; x < 9; ++x) {
+        for(int y = 0; y < 4; ++y) {
+            // also makes preset non-saved not automatable by legacy MIDI CC
+            // still automatable by host
+            int ccIdx = cc[y][x];
+            if(presetParas[y][x] != nullptr) {
+                // MIDI CC to parameter mapping
+                icc[ccIdx] = presetParas[y][x];
+            }
+        }
+    }
     auto decimals = juce::AudioParameterFloatAttributes()
         .withStringFromValueFunction ([] (auto x, auto) { return juce::String(floor(x * 1000) / 1000); });
     auto linpow = juce::NormalisableRange<float>(0.0f, 100.0f, 0.0f, 0.5f);
@@ -128,15 +143,17 @@ int EnginineAudioProcessor::getCurrentProgram()
 
 void EnginineAudioProcessor::setCurrentProgram (int index)
 {
+    // save to save in before loading new
     for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
-        if(layout[y][x] != nullptr) presets[(int)*savePreset][y][x] = **layout[y][x];
+        if(presetParas[y][x] != nullptr) presets[(int)*savePreset][y][x] = **presetParas[y][x];
     }
 
     currentPreset = index;
+    // load new preset values
     for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
-        if(layout[y][x] != nullptr) {
-            auto para = *layout[y][x];
-            // Normalization filter
+        if(presetParas[y][x] != nullptr) {
+            auto para = *presetParas[y][x];
+            // Normalization filter (code hardening)
             *para = para->getNormalisableRange().snapToLegalValue(presets[currentPreset][y][x]);
         }
     }
@@ -145,7 +162,7 @@ void EnginineAudioProcessor::setCurrentProgram (int index)
 
 const juce::String EnginineAudioProcessor::getProgramName (int index)
 {
-    return juce::String(luanames[index]);
+    return juce::String(presetNames[index]);
 }
 
 void EnginineAudioProcessor::changeProgramName (int index, const juce::String& newName)
@@ -266,8 +283,8 @@ void EnginineAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     xml->setAttribute ("presetW", (double) *savePreset);
     xml->setAttribute ("presetR", (double) currentPreset);
     for(int p = 0; p < 128; ++p) for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
-        if(layout[y][x] != nullptr) {
-            if(layout[y][x] != &savePreset) {
+        if(presetParas[y][x] != nullptr) {
+            if(presetParas[y][x] != &savePreset) {
                 xml->setAttribute("p" + juce::String(p * 27 + y * 9 + x), (double) presets[p][y][x]);
             } else {
                 // savePreset layout, store preset index instead of value
@@ -301,7 +318,7 @@ void EnginineAudioProcessor::setStateInformation (const void* data, int sizeInBy
             *savePreset = (float)xml->getDoubleAttribute ("presetW", *savePreset);
             currentPreset = (float)xml->getDoubleAttribute ("presetR", currentPreset);
             for(int p = 0; p < 128; ++p) for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
-                if(layout[y][x] != nullptr) presets[p][y][x] =
+                if(presetParas[y][x] != nullptr) presets[p][y][x] =
                     (float)xml->getDoubleAttribute("p" + juce::String(p * 27 + y * 9 + x), presets[p][y][x]);
             }
         }

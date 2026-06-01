@@ -1,7 +1,7 @@
 // header of lua lauch patch names for program changes
 // some random list from the internet with invalid one removed
 // it was well-made just after accurate
-const char* const luanames[] = {
+const char* const presetNames[] = {
   "init",          "magic",    "testy",     "reflective", "fan",
   "plain",         "fulfil",   "callous",   "door",       "cap",
   "rotten",        "blur",     "agreeable", "black",      "identify",

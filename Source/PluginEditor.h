@@ -31,12 +31,14 @@ public:
     void setUIColour(
         juce::LookAndFeel_V4::ColourScheme::UIColour colour, juce::Colour shade);
 
+    // front panel slider layout
     juce::Slider* layout[3][9] = {
         { &presetSlider, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
 
+    // front panel slider parameter names
     // for some reason the joined knob does not like retrieving the parameter's name
     juce::String sLayout[3][9] = {
         { "Save In", "Hi Pass", "Boost", "Lo Pass", "Rez", "Warm", "Split", "Trim", "Volume" },
