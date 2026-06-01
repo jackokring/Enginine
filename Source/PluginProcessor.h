@@ -95,8 +95,7 @@ public:
         { 23, 24, 25, 26, 27, 28, 29, 30, 31 }
     };
 
-    // a null dump target for MIDI CC to parameter
-    juce::AudioParameterFloat* noop;
+    // MIDI CC to parameter
     juce::AudioParameterFloat** icc[32];
 
     juce::AudioParameterFloat* midiChannel;

@@ -39,9 +39,8 @@ EnginineAudioProcessor::EnginineAudioProcessor()
 {
     // MIDI CC mappings
     // dynamic inverse for maintainance consistency
-    noop = new juce::AudioParameterFloat({ "noop", 1 }, "NoOp", 0.0f, 1.0f, 0.0f);
     for(int i = 0; i < 32; i++){
-        icc[i] = &noop;
+        icc[i] = nullptr;
     }
     for(int x = 0; x < 9; ++x) {
         for(int y = 0; y < 4; ++y) {
@@ -117,7 +116,6 @@ EnginineAudioProcessor::EnginineAudioProcessor()
 
 EnginineAudioProcessor::~EnginineAudioProcessor()
 {
-    delete noop;
 }
 
 //==============================================================================
@@ -255,9 +253,28 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
         // controller
         if(msg.isController()) {
             int controller = msg.getControllerNumber();
-            float value = msg.getControllerValue();
-
-            return;
+            if(controller < 64) {
+                int value = msg.getControllerValue();
+                auto parameter = icc[controller & 31];
+                if(parameter == nullptr) {
+                    // controller 5 etc?
+                    return;
+                }
+                bool isMSB = controller < 32;
+                float start = (*parameter)->getNormalisableRange().start;
+                float end = (*parameter)->getNormalisableRange().end;
+                float norm = ((*parameter)->get() - start) / (end - start);// 0 to 1
+                int n = floor(norm * 0x3fff);
+                if(isMSB) {
+                    n = (value << 7) | (n & 0x7f);
+                } else {
+                    n = (n & 0x3f80) | value;
+                }
+                norm = ((float)n) / 0x3fff;
+                norm = norm * (end - start) + start;
+                (*parameter)->setValueNotifyingHost(norm);
+                return;
+            }
         }
         if(msg.isPitchWheel()) {
             int wheel = msg.getPitchWheelValue();
@@ -303,30 +320,31 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
             setCurrentProgram(program);
             return;
         }
-    }
-    // clocking
-    if(msg.isMidiClock()) {
-        return;
-    }
-    if(msg.isMidiStart()) {
-        return;
-    }
-    if(msg.isMidiStop()) {
-        return;
-    }
-    if(msg.isMidiContinue()) {
-        return;
-    }
-    if(msg.isSongPositionPointer()) {
-        return;
-    }
-    // watchdog
-    if(msg.isActiveSense()) {
-        return;
-    }
-    // system exclusive
-    if(msg.isSysEx()) {
-        return;
+    } else {
+        // clocking
+        if(msg.isMidiClock()) {
+            return;
+        }
+        if(msg.isMidiStart()) {
+            return;
+        }
+        if(msg.isMidiStop()) {
+            return;
+        }
+        if(msg.isMidiContinue()) {
+            return;
+        }
+        if(msg.isSongPositionPointer()) {
+            return;
+        }
+        // watchdog
+        if(msg.isActiveSense()) {
+            return;
+        }
+        // system exclusive
+        if(msg.isSysEx()) {
+            return;
+        }
     }
 }
 
