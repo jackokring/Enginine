@@ -71,6 +71,7 @@ public:
 
     //==============================================================================
     // dump these to XML when a preset save happens
+    // also don't use CC events to set these if nullptr
     juce::AudioParameterFloat** presetParas[3][9] = {
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volume },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
