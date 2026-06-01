@@ -312,6 +312,13 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
             return;
         }
         if(msg.isResetAllControllers()) {
+            for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
+                if(presetParas[y][x] != nullptr) {
+                    auto para = *presetParas[y][x];
+                    // Normalization filter (code hardening)
+                    *para = para->getNormalisableRange().snapToLegalValue(presets[currentPreset][y][x]);
+                }
+            }
             return;
         }
         // preset change
