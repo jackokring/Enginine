@@ -17,7 +17,8 @@
 void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                                              std::function<void()> lambda,
                                              juce::AudioParameterFloat* para,
-                                             juce::SliderParameterAttachment*& pa)
+                                             juce::SliderParameterAttachment*& pa,
+                                             bool editable = true)
 {
   addAndMakeVisible (slider);
   slider.setLookAndFeel(&lookAndFeel);
@@ -25,6 +26,7 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
   slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 15);
   slider.onValueChange = lambda;
   slider.setTextValueSuffix (para->getLabel());
+  slider.setTextBoxIsEditable(editable);
   pa = new juce::SliderParameterAttachment(*para, slider);
 }
 
@@ -75,14 +77,12 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
         keyboard.setMidiChannel(chan);// int
         keyboard.setMidiChannelsToDisplay(1 << (chan - 1));// bit-mask
         *audioProcessor.midiChannel = chan;
-    }, audioProcessor.midiChannel, midiChannelPA);
+    }, audioProcessor.midiChannel, midiChannelPA, false);
 
     // presets
     knob(presetSlider, [this] {
         *audioProcessor.savePreset = (int)presetSlider.getValue();
-    }, audioProcessor.savePreset, presetPA);
-    presetSlider.setTextBoxIsEditable(false);// TODO: just a name?
-    // maybe this is where an e-mail goes ...
+    }, audioProcessor.savePreset, presetPA, false);
 
     knob(volumeSlider, [this] {
       *audioProcessor.volume = volumeSlider.getValue();
@@ -128,7 +128,7 @@ void EnginineAudioProcessorEditor::paint (juce::Graphics& g)
     auto yOff = area.getY();
 
     for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
-      auto name = sLayout[y][x];
+      auto name = knobLabels[y][x];
       g.setColour (UIColour(juce::LookAndFeel_V4::ColourScheme::defaultText));
       g.drawFittedText(name, x * cWidth + xOff, y * cHeight + yOff,
           cWidth, 15, juce::Justification::centredBottom, 1);

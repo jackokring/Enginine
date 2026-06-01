@@ -26,7 +26,8 @@ public:
     void knob(juce::Slider& slider,
               std::function<void()> lambda,
               juce::AudioParameterFloat* para,
-              juce::SliderParameterAttachment*& pa);
+              juce::SliderParameterAttachment*& pa,
+              bool editable = true);
     juce::Colour UIColour(juce::LookAndFeel_V4::ColourScheme::UIColour colour);
     void setUIColour(
         juce::LookAndFeel_V4::ColourScheme::UIColour colour, juce::Colour shade);
@@ -40,7 +41,7 @@ public:
 
     // front panel slider parameter names
     // for some reason the joined knob does not like retrieving the parameter's name
-    juce::String sLayout[3][9] = {
+    juce::String knobLabels[3][9] = {
         { "Save In", "Hi Pass", "Boost", "Lo Pass", "Rez", "Warm", "Split", "Trim", "Volume" },
         { "MIDI Chan", "", "", "", "", "", "", "", "" },
         { "", "", "", "", "", "", "", "", "" }

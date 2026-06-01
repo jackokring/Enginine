@@ -57,6 +57,9 @@ EnginineAudioProcessor::EnginineAudioProcessor()
 
     //=============================================================================
     // varoius parameter specifications for parameter typing
+    // <float> used for <int> deadcode elimination and virtual
+    // dispatch elimination for reduced I-cache pressure?
+
     // 3 decimal places
     auto decimals = juce::AudioParameterFloatAttributes()
         .withStringFromValueFunction ([] (auto x, auto) { return juce::String(floor(x * 1000) / 1000); });
