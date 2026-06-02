@@ -411,17 +411,19 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         }
     }
 
-    midiOutLock.lock();
-    for(auto m: midiOutBuffer) {
-        // add drag drops at beginning of block as ...
-        midiMessages.addEvent(m.getMessage(), 0);
+    if(midiOutLock.try_lock()) {
+        for(auto m: midiOutBuffer) {
+            // add drag drops at beginning of block as ...
+            midiMessages.addEvent(m.getMessage(), 0);
+        }
+        // technically this might glitch a removal of a midi message
+        // that was glitched sent in the iterator capture
+        // thinning control messages?
+        // hence a cheeky mutex
+        // and maybe a small delay for some messages to be processed
+        midiOutBuffer.clear();
+        midiOutLock.unlock();
     }
-    // technically this might glitch a removal of a midi message
-    // that was glitched sent in the iterator capture
-    // thinning control messages?
-    // hence a cheeky mutex
-    midiOutBuffer.clear();
-    midiOutLock.unlock();
 }
 
 //==============================================================================
