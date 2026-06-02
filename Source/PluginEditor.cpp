@@ -18,7 +18,7 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                                              std::function<void()> lambda,
                                              juce::AudioParameterFloat* para,
                                              juce::SliderParameterAttachment*& pa,
-                                             bool editable)
+                                             bool editable, int defaultCC)
 {
   addAndMakeVisible (slider);
   slider.setLookAndFeel(&lookAndFeel);
@@ -29,6 +29,7 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
   pa = new juce::SliderParameterAttachment(*para, slider);
   // tooltip setup
   auto name = slider.getName();
+  bool found = false;
   for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
       if(layout[y][x] == &slider) {
           auto ccIdx = audioProcessor.cc[x][y];
@@ -66,9 +67,72 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
               [this, ccIdx]() {
                   midiOut[ccIdx] = false;
               };
+          found = true;
           break;
       }
    }
+    if(!found) {
+        // mini area
+        slider.setSliderStyle(juce::Slider::LinearHorizontal);
+        if(defaultCC >= 0 && defaultCC <= 32) {
+            slider.setTooltip(name + " CC " + juce::String(defaultCC));
+            slider.onValueChange =
+                [this, defaultCC, lambda, para]() {
+                    // no generate MIDI out on automations
+                    if(midiOut[defaultCC]) {
+                        auto norm = para->convertTo0to1(*para);
+                        int bytes = floor(norm * 0x3fff);
+                        audioProcessor.midiOutLock.lock();
+                        // MSB
+                        audioProcessor.midiOutBuffer.addEvent(
+                            juce::MidiMessage::controllerEvent(
+                                *audioProcessor.midiChannel, defaultCC, bytes >> 7), 0);
+                        // LSB
+                        audioProcessor.midiOutBuffer.addEvent(
+                            juce::MidiMessage::controllerEvent(
+                                *audioProcessor.midiChannel, defaultCC + 32, bytes & 0x7f), 0);
+                        audioProcessor.midiOutLock.unlock();
+                    };
+                    lambda();
+                };
+            // drag MIDI out generate
+            slider.onDragStart =
+                [this, defaultCC]() {
+                    midiOut[defaultCC] = true;
+                };
+            slider.onDragEnd =
+                [this, defaultCC]() {
+                    midiOut[defaultCC] = false;
+                };
+        } else {
+            // must be pitch bend
+            slider.setTooltip(name);
+            slider.onValueChange = [this, lambda, para]() {
+                if(bendOut) {
+                    auto norm = para->convertTo0to1(*para);
+                    int bytes = floor(norm * 0x3fff);
+                    audioProcessor.midiOutLock.lock();
+                    audioProcessor.midiOutBuffer.addEvent(
+                        juce::MidiMessage::pitchWheel(
+                            *audioProcessor.midiChannel, bytes), 0);
+                    audioProcessor.midiOutLock.unlock();
+                };
+                lambda();
+            };
+            // drag MIDI out generate
+            slider.onDragStart =
+                [this]() {
+                    bendOut = true;
+                };
+            slider.onDragEnd =
+                [this]() {
+                    //bendSlider.setValue(0.5f, juce::dontSendNotification);
+                    *audioProcessor.bend = 0.0f;
+                    audioProcessor.frequencyMult = 1.0f;
+                    bendOut = false;
+                };
+        }
+    }
 }
 
 //==============================================================================
@@ -117,16 +181,12 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     knob(bendSlider, [this] {
         *audioProcessor.bend = bendSlider.getValue();
         audioProcessor.frequencyMult = std::powf(2.0f, (bendSlider.getValue() - 0.5f) * 2.0f);// +- 1 octave
-
     }, audioProcessor.bend, bendPA, false);
-    // and fix up special case
-    bendSlider.setSliderStyle(juce::Slider::LinearHorizontal);
-    bendSlider.onDragEnd = [this] {
-        // spring back to zero on release
-        bendSlider.setValue(0.0f, juce::dontSendNotification);
-        audioProcessor.frequencyMult = 1.0f;
-    };
-    bendSlider.setTooltip("Pitch Bender");
+
+    // mod
+    knob(modSlider, [this] {
+        *audioProcessor.mod = modSlider.getValue();
+    }, audioProcessor.mod, modPA, false, 1);// MOD Wheel default on CC 1
 
     // MIDI channel
     knob(midiChannelSlider, [this] {
@@ -152,6 +212,7 @@ EnginineAudioProcessorEditor::~EnginineAudioProcessorEditor()
     delete presetPA;
     delete volumePA;
     delete bendPA;
+    delete modPA;
     delete midiChannelPA;
 
     // apparently it needs it to deallocate lookAndFeel
@@ -205,7 +266,10 @@ void EnginineAudioProcessorEditor::resized()
     auto area = getLocalBounds();
     auto keyArea = area.removeFromBottom(keysHeight);
     auto miniArea = keyArea.removeFromLeft(200).reduced(margin);
-    bendSlider.setBounds(miniArea);
+    auto modArea = miniArea.removeFromTop(miniArea.getHeight() / 2.0f);
+    auto bendArea = miniArea;
+    bendSlider.setBounds(bendArea);
+    modSlider.setBounds(modArea);
     keyboard.setBounds(keyArea);
     area = area.reduced(margin);
 

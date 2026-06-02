@@ -86,13 +86,21 @@ EnginineAudioProcessor::EnginineAudioProcessor()
 
     //=============================================================================
     // parameters of the plugin
-    bend = new juce::AudioParameterFloat (
+    addParameter(bend = new juce::AudioParameterFloat (
         { "bend", 1 }, // parameter ID, version
         "Bend", // parameter name
         octaveBend, // parameter range
         0.0f, // default value
         decimals.withLabel(" semi")
-    );
+    ));
+
+    addParameter(mod = new juce::AudioParameterFloat (
+        { "mod", 1 }, // parameter ID, version
+        "Mod Wheel", // parameter name
+        linpow, // parameter range
+        0.0f, // default value
+        decimals.withLabel(" %")
+    ));
 
     addParameter (
         savePreset = new juce::AudioParameterFloat (
@@ -131,8 +139,6 @@ EnginineAudioProcessor::EnginineAudioProcessor()
 
 EnginineAudioProcessor::~EnginineAudioProcessor()
 {
-    // special as not made a parameter
-    delete bend;
 }
 
 //==============================================================================

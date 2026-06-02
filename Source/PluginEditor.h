@@ -27,7 +27,7 @@ public:
               std::function<void()> lambda,
               juce::AudioParameterFloat* para,
               juce::SliderParameterAttachment*& pa,
-              bool editable = true);
+              bool editable = true, int defaultCC = -1);
     juce::Colour UIColour(juce::LookAndFeel_V4::ColourScheme::UIColour colour);
     void setUIColour(
         juce::LookAndFeel_V4::ColourScheme::UIColour colour, juce::Colour shade);
@@ -48,12 +48,13 @@ public:
     };
 
     // MIDI CC in active don't do GUI CC output
-    std::atomic<bool> midiOut[32] = {
+    bool midiOut[32] = {
         false, false, false, false, false, false, false, false,
         false, false, false, false, false, false, false, false,
         false, false, false, false, false, false, false, false,
         false, false, false, false, false, false, false, false
     };
+    bool bendOut = false;
 
 //private:
     // This reference is provided as a quick way for your editor to
@@ -67,6 +68,8 @@ public:
     // sliders and PAs
     juce::Slider bendSlider;
     juce::SliderParameterAttachment *bendPA;
+    juce::Slider modSlider;
+    juce::SliderParameterAttachment *modPA;
     juce::Slider presetSlider;
     juce::SliderParameterAttachment *presetPA;
     juce::Slider volumeSlider;
