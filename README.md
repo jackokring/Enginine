@@ -32,16 +32,16 @@ So I've dumped `KDevelop` and started using `Zed` (with `bear` to make the `comp
 
 Testing with `Carla` as the host restricts use of CCs 2 (dry/wet), 7 (mix volume) and 8 (balance). Also CC 6 (RPN/NRPN data entry) would be somewhat of a pain to use in many studio kinds of settings. Also reserving CC 6 for RPN/NRPN data entry, allows for some hidden parameters to be accessed via CC.
 
-The modulation wheel CC1 is specially routed and not part of any preset information. This then leaves the rest of the 14 bit CCs for use as the 27 knob slots. In `C`/`C++` this was expressed in the 9 across and 3 down grid layout like below for matching with the front panel layout.
+The modulation wheel CC 1 is specially routed and not part of any preset information. This then leaves the rest of the 14 bit CCs for use as the 27 knob slots. In `C`/`C++` this was expressed in the 9 across and 3 down grid layout like below for matching with the front panel layout.
 
 ```C
-// MIDI CC 14 bit controller numbers n and n+32
-// 2 - Carla Dry/Wet (breath)
-// 6 - NRPN, RPN Data Entry (reserved)
-// 7 - Carla Volume
-// 8 - Carla Balance
-// parameter to MIDI CC
-int cc[3][9] = {
+    // MIDI CC 14 bit controller numbers n and n+32
+    // 2 - Carla Dry/Wet (breath)
+    // 6 - NRPN, RPN Data Entry (reserved)
+    // 7 - Carla Volume
+    // 8 - Carla Balance
+    // parameter to MIDI CC
+    int cc[3][9] = {
         {  0,  3,  4,  5,  9, 10, 11, 12, 13 },
         { 14, 15, 16, 17, 18, 19, 20, 21, 22 },
         { 23, 24, 25, 26, 27, 28, 29, 30, 31 }
