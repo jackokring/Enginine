@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "juce_audio_basics/juce_audio_basics.h"
 #include "juce_audio_processors_headless/juce_audio_processors_headless.h"
 #include <JuceHeader.h>
 #include <JucePluginDefines.h>
@@ -98,6 +99,15 @@ public:
 
     // MIDI CC to parameter
     juce::AudioParameterFloat** icc[32];
+
+    // MIDI CC in active don't do GUI CC output
+    std::atomic<bool> midiOut[32] = {
+        false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false
+    };
+    juce::MidiBuffer midiOutBuffer;
 
     juce::AudioParameterFloat* midiChannel;
     float transpose = 0.0f;

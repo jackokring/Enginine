@@ -24,8 +24,6 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
   slider.setLookAndFeel(&lookAndFeel);
   slider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
   slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 15);
-  // TODO: MIDI out CC
-  slider.onValueChange = lambda;
   slider.setTextValueSuffix (para->getLabel());
   slider.setTextBoxIsEditable(editable);
   pa = new juce::SliderParameterAttachment(*para, slider);
@@ -33,12 +31,29 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
   auto name = slider.getName();
   for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
       if(layout[y][x] == &slider) {
-          auto ccNum = "CC " + juce::String(audioProcessor.cc[x][y]);
+          auto ccIdx = audioProcessor.cc[x][y];
+          auto ccNum = "CC " + juce::String(ccIdx);
           if(audioProcessor.presetParas[y][x] == nullptr) {
               ccNum = "(" + ccNum + ")";
           }
           name = name + " " + ccNum;
           slider.setTooltip(name);
+          slider.onValueChange =
+              [this, ccIdx, lambda, para]() {
+                  if(!audioProcessor.midiOut[ccIdx]) {
+                      auto norm = para->convertTo0to1(*para);
+                      int bytes = floor(norm * 0x3fff);
+                      // MSB
+                      audioProcessor.midiOutBuffer.addEvent(
+                          juce::MidiMessage::controllerEvent(
+                              *audioProcessor.midiChannel, ccIdx, bytes >> 7), 0);
+                      // LSB
+                      audioProcessor.midiOutBuffer.addEvent(
+                          juce::MidiMessage::controllerEvent(
+                              *audioProcessor.midiChannel, ccIdx + 32, bytes & 0x7f), 0);
+                  };
+                  lambda();
+              };
           break;
       }
    }

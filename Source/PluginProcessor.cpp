@@ -34,8 +34,11 @@ EnginineAudioProcessor::EnginineAudioProcessor()
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
                        ),
-    over(2, 2, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR)
+#else
+    :
 #endif
+    over(2, 2, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR),
+    midiOutBuffer()
 {
     // MIDI CC mappings
     // dynamic inverse for maintainance consistency
@@ -254,6 +257,7 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
         if(msg.isController()) {
             int controller = msg.getControllerNumber();
             if(controller < 64) {
+                midiOut[controller] = true;
                 int value = msg.getControllerValue();
                 auto parameter = icc[controller & 31];
                 if(parameter == nullptr) {
@@ -273,6 +277,7 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
                 // this assign does the notify host thing
                 // setValueNotifyingHost(float newValue) is implicit in this
                 **parameter = (*parameter)->convertFrom0to1(norm);
+                midiOut[controller] = false;
                 return;
             }
         }
@@ -405,6 +410,15 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
             writes[i][s - 1] *= smoothVol.getNextValue();
         }
     }
+
+    for(auto m: midiOutBuffer) {
+        // add drag drops at beginning of block as ...
+        midiMessages.addEvent(m.getMessage(), 0);
+    }
+    // technically this might glitch a removal of a midi message
+    // that was glitched sent in the iterator capture
+    // thinning control messages?
+    midiOutBuffer.clear();
 }
 
 //==============================================================================
