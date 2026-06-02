@@ -278,11 +278,11 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
         // controller
         if(msg.isController()) {
             int controller = msg.getControllerNumber();
+            int value = msg.getControllerValue();
             if(controller < 64) {
-                int value = msg.getControllerValue();
                 auto parameter = icc[controller & 31];
                 if(parameter == nullptr) {
-                    // controller 5 etc?
+                    // TODO: handle 6
                     return;
                 }
                 bool isMSB = controller < 32;
@@ -297,6 +297,16 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
                 norm = ((float)n) / 0x3fff;
                 // this assign does the notify host thing
                 // setValueNotifyingHost(float newValue) is implicit in this
+                **parameter = (*parameter)->convertFrom0to1(norm);
+                return;
+            }
+            if(controller < 96) {
+                auto parameter = iccHighs[controller - 64];
+                if(parameter == nullptr) {
+                    return;
+                }
+                // stepped 14-bit simulant
+                float norm = ((float)((value << 7) | value)) / 0x3fff;
                 **parameter = (*parameter)->convertFrom0to1(norm);
                 return;
             }

@@ -35,7 +35,7 @@ public:
 
     // front panel slider layout
     juce::Slider* layout[3][9] = {
-        { &presetSlider, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
+        { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &volumeSlider },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr },
         { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr }
     };
@@ -43,7 +43,7 @@ public:
     // front panel slider parameter names
     // for some reason the joined knob does not like retrieving the parameter's name
     juce::String knobLabels[3][9] = {
-        { "Save In", "Hi Pass", "Boost", "Lo Pass", "Rez", "Warm", "Split", "Trim", "Volume" },
+        { "", "Hi Pass", "Boost", "Lo Pass", "Rez", "Warm", "Split", "Trim", "Volume" },
         { "", "", "", "", "", "", "", "", "" },
         { "", "", "", "", "", "", "", "", "" }
     };
@@ -56,7 +56,6 @@ public:
         false, false, false, false, false, false, false, false
     };
     // MIDI CC form 64 so access via midiOutHighs[cc - 64]
-    // 84 - Portomento (seems it's a duplicate of 5) => MIDI Channel Select
     bool midiOutHighs[32] = {
         false, false, false, false, false, false, false, false,
         false, false, false, false, false, false, false, false,
@@ -72,6 +71,7 @@ public:
     juce::LookAndFeel_V4 lookAndFeel;
     juce::MidiKeyboardComponent keyboard;
     juce::Image background;
+    juce::TooltipWindow* tooltipWindow;
 
     //================================================================
     // sliders and PAs

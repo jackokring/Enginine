@@ -97,6 +97,15 @@ public:
 
     // MIDI CC to parameter
     juce::AudioParameterFloat** icc[32];
+    // MIDI CC 64 to 95 (these are not part of a preset save)
+    // 69 - Hold 2 (I wouldn't use it) => Save Preset In Select
+    // 84 - Portomento (seems it's a duplicate of 5) => MIDI Channel Select
+    juce::AudioParameterFloat** iccHighs[32] = {
+        nullptr, nullptr, nullptr, nullptr, nullptr, &savePreset, nullptr, nullptr,//64 - 71
+        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,//72 - 79
+        nullptr, nullptr, nullptr, nullptr, &midiChannel, nullptr, nullptr, nullptr,//80 - 87
+        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr //88 - 95
+    };
 
     juce::MidiBuffer midiOutBuffer;
     std::mutex midiOutLock;

@@ -29,15 +29,12 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
   slider.setTextBoxIsEditable(editable);
   pa = new juce::SliderParameterAttachment(*para, slider);
   // tooltip setup
-  auto name = slider.getName();
+  auto name = para->getName(40);
   bool found = false;
   for(int x = 0; x < 9; ++x) for(int y = 0; y < 3; ++y) {
       if(layout[y][x] == &slider) {
-          auto ccIdx = audioProcessor.cc[x][y];
+          auto ccIdx = audioProcessor.cc[y][x];
           auto ccNum = "CC " + juce::String(ccIdx);
-          if(audioProcessor.presetParas[y][x] == nullptr) {
-              ccNum = "(" + ccNum + ")";
-          }
           name = name + " " + ccNum;
           slider.setTooltip(name);
           slider.onValueChange =
@@ -76,12 +73,13 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
         // mini area
         if(!keepRotary)
             slider.setSliderStyle(juce::Slider::LinearHorizontal);
-        if(defaultCC >= 0 && defaultCC <= 32 || defaultCC >= 64 && defaultCC <= 96) {
-            slider.setTooltip(name + " CC " + juce::String(defaultCC));
+        if(defaultCC >= 0 && defaultCC < 32 || defaultCC >= 64 && defaultCC < 96) {
+            auto ccNum = "CC " + juce::String(defaultCC);
+            slider.setTooltip(name + " " + ccNum);
             slider.onValueChange =
                 [this, defaultCC, lambda, para]() {
                     // no generate MIDI out on automations
-                    if(defaultCC <= 32 ? midiOut[defaultCC] : midiOutHighs[defaultCC - 64]) {
+                    if(defaultCC < 32 ? midiOut[defaultCC] : midiOutHighs[defaultCC - 64]) {
                         auto norm = para->convertTo0to1(*para);
                         int bytes = floor(norm * 0x3fff);
                         audioProcessor.midiOutLock.lock();
@@ -90,7 +88,7 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                             juce::MidiMessage::controllerEvent(
                                 *audioProcessor.midiChannel, defaultCC, bytes >> 7), 0);
                         // LSB
-                        if(defaultCC <= 32)
+                        if(defaultCC < 32)
                             audioProcessor.midiOutBuffer.addEvent(
                             juce::MidiMessage::controllerEvent(
                                 *audioProcessor.midiChannel, defaultCC + 32, bytes & 0x7f), 0);
@@ -101,11 +99,11 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
             // drag MIDI out generate
             slider.onDragStart =
                 [this, defaultCC]() {
-                    (defaultCC <= 32 ? midiOut[defaultCC] : midiOutHighs[defaultCC - 64]) = true;
+                    (defaultCC < 32 ? midiOut[defaultCC] : midiOutHighs[defaultCC - 64]) = true;
                 };
             slider.onDragEnd =
                 [this, defaultCC]() {
-                    (defaultCC <= 32 ? midiOut[defaultCC] : midiOutHighs[defaultCC - 64]) = false;
+                    (defaultCC < 32 ? midiOut[defaultCC] : midiOutHighs[defaultCC - 64]) = false;
                 };
         } else {
             // must be pitch bend
@@ -147,6 +145,7 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     // editor's size to whatever you need it to be.
     setLookAndFeel(&lookAndFeel);
     setSize (888, 561);
+    addChildComponent(tooltipWindow = new juce::TooltipWindow());
 
     background = juce::ImageCache::getFromMemory(
         BinaryData::background_png, BinaryData::background_pngSize);
@@ -202,7 +201,7 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     // presets
     knob(presetSlider, [this] {
         *audioProcessor.savePreset = (int)presetSlider.getValue();
-    }, audioProcessor.savePreset, presetPA, false);
+    }, audioProcessor.savePreset, presetPA, false, 69, true);
 
     // general parameters
     knob(volumeSlider, [this] {
@@ -212,6 +211,7 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
 
 EnginineAudioProcessorEditor::~EnginineAudioProcessorEditor()
 {
+    delete tooltipWindow;
     // MUST delete ALL parameter attachments
     delete presetPA;
     delete volumePA;
@@ -270,10 +270,12 @@ void EnginineAudioProcessorEditor::resized()
     auto area = getLocalBounds();
     auto keyArea = area.removeFromBottom(keysHeight);
     auto miniArea = keyArea.removeFromLeft(303).reduced(margin);
-    auto chanArea = miniArea.removeFromLeft(74);
+    auto chanArea = miniArea.removeFromLeft(84 * 2);
+    auto presetArea = chanArea.removeFromRight(74);
     auto modArea = miniArea.removeFromTop(miniArea.getHeight() / 2.0f);
     auto bendArea = miniArea;
     midiChannelSlider.setBounds(chanArea);
+    presetSlider.setBounds(presetArea);
     bendSlider.setBounds(bendArea);
     modSlider.setBounds(modArea);
     keyboard.setBounds(keyArea);
