@@ -131,6 +131,8 @@ EnginineAudioProcessor::EnginineAudioProcessor()
 
 EnginineAudioProcessor::~EnginineAudioProcessor()
 {
+    // special as not made a parameter
+    delete bend;
 }
 
 //==============================================================================
@@ -337,6 +339,9 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
                     *para = para->getNormalisableRange().snapToLegalValue(presets[currentPreset][y][x]);
                 }
             }
+            // rest bender
+            *bend = 0.0f;
+            frequencyMult = 1.0f;
             return;
         }
         // preset change
@@ -402,11 +407,11 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     auto signal = over.processSamplesUp(block);
     //=======================================================================
     // current set to 4* oversample on signal
-    auto num = signal.getNumSamples() * 4;// oversampling
+    auto num = signal.getNumSamples();// oversampling implicit in signal
     size_t begin = 0;
     for(auto m: midiMessages) {
         auto msg = m.getMessage();
-        auto upto = m.samplePosition * 4;// oversampling
+        auto upto = m.samplePosition * 4;// oversampling not implicit in MIDI
         process(signal.getSubBlock(begin, upto - begin));
         begin = upto;
         midi(msg);

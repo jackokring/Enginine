@@ -65,6 +65,8 @@ public:
 
     //================================================================
     // sliders and PAs
+    juce::Slider bendSlider;
+    juce::SliderParameterAttachment *bendPA;
     juce::Slider presetSlider;
     juce::SliderParameterAttachment *presetPA;
     juce::Slider volumeSlider;

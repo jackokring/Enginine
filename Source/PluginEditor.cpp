@@ -112,6 +112,22 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     addAndMakeVisible(keyboard);
 
     // all made visible in the knod function
+
+    // bend
+    knob(bendSlider, [this] {
+        *audioProcessor.bend = bendSlider.getValue();
+        audioProcessor.frequencyMult = std::powf(2.0f, (bendSlider.getValue() - 0.5f) * 2.0f);// +- 1 octave
+
+    }, audioProcessor.bend, bendPA, false);
+    // and fix up special case
+    bendSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    bendSlider.onDragEnd = [this] {
+        // spring back to zero on release
+        bendSlider.setValue(0.0f, juce::dontSendNotification);
+        audioProcessor.frequencyMult = 1.0f;
+    };
+    bendSlider.setTooltip("Pitch Bender");
+
     // MIDI channel
     knob(midiChannelSlider, [this] {
         int chan = (int)midiChannelSlider.getValue();
@@ -135,6 +151,8 @@ EnginineAudioProcessorEditor::~EnginineAudioProcessorEditor()
     // MUST delete ALL parameter attachments
     delete presetPA;
     delete volumePA;
+    delete bendPA;
+    delete midiChannelPA;
 
     // apparently it needs it to deallocate lookAndFeel
     setLookAndFeel(nullptr);
@@ -185,7 +203,10 @@ void EnginineAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     auto area = getLocalBounds();
-    keyboard.setBounds(area.removeFromBottom(keysHeight));
+    auto keyArea = area.removeFromBottom(keysHeight);
+    auto miniArea = keyArea.removeFromLeft(200).reduced(margin);
+    bendSlider.setBounds(miniArea);
+    keyboard.setBounds(keyArea);
     area = area.reduced(margin);
 
     auto cWidth = area.getWidth() / 9.0f;
