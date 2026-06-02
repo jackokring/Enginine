@@ -90,7 +90,7 @@ EnginineAudioProcessor::EnginineAudioProcessor()
     // parameters of the plugin
     addParameter(bend = new juce::AudioParameterFloat (
         { "bend", 1 }, // parameter ID, version
-        "Bend", // parameter name
+        "Pitch Bend", // parameter name
         octaveBend, // parameter range
         0.0f, // default value
         decimals.withLabel(" semi")
@@ -127,10 +127,10 @@ EnginineAudioProcessor::EnginineAudioProcessor()
     addParameter(
         midiChannel = new juce::AudioParameterFloat (
             { "midiChannel", 1 },
-            "MIDI Chan",
+            "MIDI Channel",
             nibble, // parameter range
             1.0f, // default value
-            natural // restrictions on print
+            natural.withLabel(" chan") // restrictions on print
         )
     );
 

@@ -18,7 +18,8 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                                              std::function<void()> lambda,
                                              juce::AudioParameterFloat* para,
                                              juce::SliderParameterAttachment*& pa,
-                                             bool editable, int defaultCC)
+                                             bool editable, int defaultCC,
+                                             bool keepRotary)
 {
   addAndMakeVisible (slider);
   slider.setLookAndFeel(&lookAndFeel);
@@ -73,13 +74,14 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
    }
     if(!found) {
         // mini area
-        slider.setSliderStyle(juce::Slider::LinearHorizontal);
-        if(defaultCC >= 0 && defaultCC <= 32) {
+        if(!keepRotary)
+            slider.setSliderStyle(juce::Slider::LinearHorizontal);
+        if(defaultCC >= 0 && defaultCC <= 32 || defaultCC >= 64 && defaultCC <= 96) {
             slider.setTooltip(name + " CC " + juce::String(defaultCC));
             slider.onValueChange =
                 [this, defaultCC, lambda, para]() {
                     // no generate MIDI out on automations
-                    if(midiOut[defaultCC]) {
+                    if(defaultCC <= 32 ? midiOut[defaultCC] : midiOutHighs[defaultCC - 64]) {
                         auto norm = para->convertTo0to1(*para);
                         int bytes = floor(norm * 0x3fff);
                         audioProcessor.midiOutLock.lock();
@@ -88,7 +90,8 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                             juce::MidiMessage::controllerEvent(
                                 *audioProcessor.midiChannel, defaultCC, bytes >> 7), 0);
                         // LSB
-                        audioProcessor.midiOutBuffer.addEvent(
+                        if(defaultCC <= 32)
+                            audioProcessor.midiOutBuffer.addEvent(
                             juce::MidiMessage::controllerEvent(
                                 *audioProcessor.midiChannel, defaultCC + 32, bytes & 0x7f), 0);
                         audioProcessor.midiOutLock.unlock();
@@ -98,11 +101,11 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
             // drag MIDI out generate
             slider.onDragStart =
                 [this, defaultCC]() {
-                    midiOut[defaultCC] = true;
+                    (defaultCC <= 32 ? midiOut[defaultCC] : midiOutHighs[defaultCC - 64]) = true;
                 };
             slider.onDragEnd =
                 [this, defaultCC]() {
-                    midiOut[defaultCC] = false;
+                    (defaultCC <= 32 ? midiOut[defaultCC] : midiOutHighs[defaultCC - 64]) = false;
                 };
         } else {
             // must be pitch bend
@@ -160,10 +163,10 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     setUIColour(juce::LookAndFeel_V4::ColourScheme::menuText, juce::Colours::green);
 
     // TODO: alter look and feel of knobs
-    lookAndFeel.setColour(juce::Slider::backgroundColourId, juce::Colours::black);
+    lookAndFeel.setColour(juce::Slider::backgroundColourId, juce::Colours::red);
     // pointer colour
     lookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::white);
-    lookAndFeel.setColour(juce::Slider::trackColourId, juce::Colours::red);
+    lookAndFeel.setColour(juce::Slider::trackColourId, juce::Colours::green);
     // on colour
     lookAndFeel.setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::green);
     // off colour
@@ -188,19 +191,20 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
         *audioProcessor.mod = modSlider.getValue();
     }, audioProcessor.mod, modPA, false, 1);// MOD Wheel default on CC 1
 
-    // MIDI channel
+    // MIDI channel (use portomento second instance CC 84, keepRotary)
     knob(midiChannelSlider, [this] {
         int chan = (int)midiChannelSlider.getValue();
         keyboard.setMidiChannel(chan);// int
         keyboard.setMidiChannelsToDisplay(1 << (chan - 1));// bit-mask
         *audioProcessor.midiChannel = chan;
-    }, audioProcessor.midiChannel, midiChannelPA, false);
+    }, audioProcessor.midiChannel, midiChannelPA, false, 84, true);
 
     // presets
     knob(presetSlider, [this] {
         *audioProcessor.savePreset = (int)presetSlider.getValue();
     }, audioProcessor.savePreset, presetPA, false);
 
+    // general parameters
     knob(volumeSlider, [this] {
       *audioProcessor.volume = volumeSlider.getValue();
     }, audioProcessor.volume, volumePA);
@@ -265,9 +269,11 @@ void EnginineAudioProcessorEditor::resized()
     // subcomponents in your editor..
     auto area = getLocalBounds();
     auto keyArea = area.removeFromBottom(keysHeight);
-    auto miniArea = keyArea.removeFromLeft(200).reduced(margin);
+    auto miniArea = keyArea.removeFromLeft(303).reduced(margin);
+    auto chanArea = miniArea.removeFromLeft(74);
     auto modArea = miniArea.removeFromTop(miniArea.getHeight() / 2.0f);
     auto bendArea = miniArea;
+    midiChannelSlider.setBounds(chanArea);
     bendSlider.setBounds(bendArea);
     modSlider.setBounds(modArea);
     keyboard.setBounds(keyArea);
