@@ -102,9 +102,12 @@ public:
 
     juce::MidiBuffer midiOutBuffer;
     std::mutex midiOutLock;
-
     juce::AudioParameterFloat* midiChannel;
-    float transpose = 0.0f;
+
+    // MIDI pitch bend (+- 1 octave)
+    juce::AudioParameterFloat* bend;
+    float frequencyMult = 1.0f;
+
     float tempoNoSync = 120.0f;
 
     //==============================================================================

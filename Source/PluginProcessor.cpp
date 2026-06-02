@@ -12,7 +12,9 @@
 #include "juce_core/juce_core.h"
 #include "juce_dsp/juce_dsp.h"
 #include "juce_gui_basics/juce_gui_basics.h"
+#include <cmath>
 
+/*
 template <typename ValueT>
 juce::NormalisableRange<ValueT> logRange (ValueT min, ValueT max)
 {
@@ -22,6 +24,7 @@ juce::NormalisableRange<ValueT> logRange (ValueT min, ValueT max)
         [=](ValueT min, ValueT, ValueT v) { return std::log (v / min) / rng; }
     };
 }
+*/
 
 //==============================================================================
 EnginineAudioProcessor::EnginineAudioProcessor()
@@ -78,10 +81,19 @@ EnginineAudioProcessor::EnginineAudioProcessor()
     auto linpow = juce::NormalisableRange<float>(0.0f, 100.0f, 0.0f, 0.5f);
     auto preset128 = juce::NormalisableRange<float>(0.0f, 127.0f, 1.0f);
     auto nibble = juce::NormalisableRange<float>(1.0f, 16.0f, 1.0f);
-    auto hearing = logRange(20.0f, 20000.0f);
+    //auto hearing = logRange(20.0f, 20000.0f);
+    auto octaveBend = juce::NormalisableRange<float>(-12.0f, 12.0f, 0.0f);
 
     //=============================================================================
     // parameters of the plugin
+    bend = new juce::AudioParameterFloat (
+        { "bend", 1 }, // parameter ID, version
+        "Bend", // parameter name
+        octaveBend, // parameter range
+        0.0f, // default value
+        decimals.withLabel(" semi")
+    );
+
     addParameter (
         savePreset = new juce::AudioParameterFloat (
             { "savePreset", 1 }, // parameter ID, version
@@ -281,7 +293,10 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
         }
         if(msg.isPitchWheel()) {
             int wheel = msg.getPitchWheelValue();
-
+            float norm = (float)wheel / 0x3fff;
+            *bend = bend->convertFrom0to1(norm);
+            // speed cache as simplest solution
+            frequencyMult = std::powf(2.0f, (norm - 0.5f) * 2.0f);// +- 1 octave
             return;
         }
         // notes
@@ -378,6 +393,8 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
+
+    // Visuals, not sample acurate
     keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
 
     over.reset();
