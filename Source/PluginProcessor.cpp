@@ -59,6 +59,8 @@ EnginineAudioProcessor::EnginineAudioProcessor()
             }
         }
     }
+    // and an exceptional case for mod wheel
+    icc[1] = &mod;
 
     //=============================================================================
     // varoius parameter specifications for parameter typing
