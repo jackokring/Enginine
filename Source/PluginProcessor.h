@@ -108,6 +108,7 @@ public:
         false, false, false, false, false, false, false, false
     };
     juce::MidiBuffer midiOutBuffer;
+    std::mutex midiOutLock;
 
     juce::AudioParameterFloat* midiChannel;
     float transpose = 0.0f;

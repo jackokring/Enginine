@@ -43,6 +43,7 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                   if(!audioProcessor.midiOut[ccIdx]) {
                       auto norm = para->convertTo0to1(*para);
                       int bytes = floor(norm * 0x3fff);
+                      audioProcessor.midiOutLock.lock();
                       // MSB
                       audioProcessor.midiOutBuffer.addEvent(
                           juce::MidiMessage::controllerEvent(
@@ -51,6 +52,7 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                       audioProcessor.midiOutBuffer.addEvent(
                           juce::MidiMessage::controllerEvent(
                               *audioProcessor.midiChannel, ccIdx + 32, bytes & 0x7f), 0);
+                      audioProcessor.midiOutLock.unlock();
                   };
                   lambda();
               };
