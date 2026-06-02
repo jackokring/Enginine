@@ -47,6 +47,14 @@ public:
         { "", "", "", "", "", "", "", "", "" }
     };
 
+    // MIDI CC in active don't do GUI CC output
+    std::atomic<bool> midiOut[32] = {
+        false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false, false
+    };
+
 //private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.

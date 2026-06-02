@@ -40,7 +40,8 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
           slider.setTooltip(name);
           slider.onValueChange =
               [this, ccIdx, lambda, para]() {
-                  if(!audioProcessor.midiOut[ccIdx]) {
+                  // no generate MIDI out on automations
+                  if(midiOut[ccIdx]) {
                       auto norm = para->convertTo0to1(*para);
                       int bytes = floor(norm * 0x3fff);
                       audioProcessor.midiOutLock.lock();
@@ -55,6 +56,15 @@ void EnginineAudioProcessorEditor::knob(juce::Slider& slider,
                       audioProcessor.midiOutLock.unlock();
                   };
                   lambda();
+              };
+          // drag MIDI out generate
+          slider.onDragStart =
+              [this, ccIdx]() {
+                  midiOut[ccIdx] = true;
+              };
+          slider.onDragEnd =
+              [this, ccIdx]() {
+                  midiOut[ccIdx] = false;
               };
           break;
       }

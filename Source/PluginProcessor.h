@@ -100,13 +100,6 @@ public:
     // MIDI CC to parameter
     juce::AudioParameterFloat** icc[32];
 
-    // MIDI CC in active don't do GUI CC output
-    std::atomic<bool> midiOut[32] = {
-        false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false,
-        false, false, false, false, false, false, false, false
-    };
     juce::MidiBuffer midiOutBuffer;
     std::mutex midiOutLock;
 

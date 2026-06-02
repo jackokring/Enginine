@@ -257,7 +257,6 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
         if(msg.isController()) {
             int controller = msg.getControllerNumber();
             if(controller < 64) {
-                midiOut[controller] = true;
                 int value = msg.getControllerValue();
                 auto parameter = icc[controller & 31];
                 if(parameter == nullptr) {
@@ -277,7 +276,6 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
                 // this assign does the notify host thing
                 // setValueNotifyingHost(float newValue) is implicit in this
                 **parameter = (*parameter)->convertFrom0to1(norm);
-                midiOut[controller] = false;
                 return;
             }
         }
