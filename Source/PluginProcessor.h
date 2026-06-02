@@ -114,6 +114,7 @@ public:
     // MIDI pitch bend (+- 1 octave)
     juce::AudioParameterFloat* bend;
     float frequencyMult = 1.0f;
+    float channelPressure = 0.0f;
     juce::AudioParameterFloat* mod;
 
     float tempoNoSync = 120.0f;

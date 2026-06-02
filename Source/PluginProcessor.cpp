@@ -290,7 +290,8 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
                 float norm = (*parameter)->convertTo0to1(**parameter);// 0 to 1
                 int n = floor(norm * 0x3fff);
                 if(isMSB) {
-                    n = (value << 7) | (n & 0x7f);
+                    // stepped 14-bit simulant
+                    n = (value << 7) | value;
                 } else {
                     n = (n & 0x3f80) | value;
                 }
@@ -322,7 +323,7 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
         // notes
         if(msg.isChannelPressure()) {
             int pressure = msg.getChannelPressureValue();
-
+            channelPressure = ((float)((pressure << 7) | pressure)) / 0x3fff;
             return;
         }
         if(msg.isAftertouch()) {
