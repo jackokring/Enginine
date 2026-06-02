@@ -350,6 +350,8 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
             // rest bender
             *bend = 0.0f;
             frequencyMult = 1.0f;
+            // reset mod wheel (assumption of wild to nil)
+            *mod = 0.0f;
             return;
         }
         // preset change

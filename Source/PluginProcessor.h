@@ -84,11 +84,10 @@ public:
     float presets[128][3][9] = {};//zeros
 
     // MIDI CC 14 bit controller numbers n and n+32
-    // 2 - Carla Dry/Wet
-    // 6 - NRPN, RPN Data Entry (kind of last selected drift [debug?])
+    // 2 - Carla Dry/Wet (breath)
+    // 6 - NRPN, RPN Data Entry (reserved)
     // 7 - Carla Volume
     // 8 - Carla Balance
-    // So 27 left (plus 1 - MOD Wheel)
     // parameter to MIDI CC
     int cc[3][9] = {
         {  0,  3,  4,  5,  9, 10, 11, 12, 13 },
