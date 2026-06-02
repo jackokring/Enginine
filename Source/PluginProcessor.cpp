@@ -261,9 +261,8 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
                     return;
                 }
                 bool isMSB = controller < 32;
-                float start = (*parameter)->getNormalisableRange().start;
-                float end = (*parameter)->getNormalisableRange().end;
-                float norm = ((*parameter)->get() - start) / (end - start);// 0 to 1
+                // yes, it's a lot simpler than it appears
+                float norm = (*parameter)->convertTo0to1(**parameter);// 0 to 1
                 int n = floor(norm * 0x3fff);
                 if(isMSB) {
                     n = (value << 7) | (n & 0x7f);
@@ -271,8 +270,9 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
                     n = (n & 0x3f80) | value;
                 }
                 norm = ((float)n) / 0x3fff;
-                norm = norm * (end - start) + start;
-                (*parameter)->setValueNotifyingHost(norm);
+                // this assign does the notify host thing
+                // setValueNotifyingHost(float newValue) is implicit in this
+                **parameter = (*parameter)->convertFrom0to1(norm);
                 return;
             }
         }
