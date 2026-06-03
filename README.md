@@ -20,11 +20,11 @@ So I've dumped `KDevelop` and started using `Zed` (with `bear` to make the `comp
  - [X] Layout Using Own Grid Mehtod (27 GUI)
  - [X] Keyboard
  - [X] Simple Legacy MIDI In and Out (good for standalone MIDI)
- - [X] Parameter Preset Mechanism (`preset.zlib` packaging by `projucer` save)
- - [X] Python Utility `makezlib.py` (`preset.xml` to `preset.zlib` conversion)
+ - [X] Parameter Preset Mechanism
+ - [X] Python Utilities
  - [X] Parameter Skew Mechanism
  - [X] Background
- - [X] Zed/Bear Build (if your home is `/home/jacko`)
+ - [X] Zed/Bear Build
  - [ ] Hopefully Some Cool Sounding Stuff
  - [ ] Preset Filling
 
@@ -50,17 +50,19 @@ The modulation wheel CC 1 is specially routed and not part of any preset informa
 
 ## Notes on Bear Setup and Building
 
-The `JUCE` is in `~/JUCE` and `Enginine` is in `~/Enginine`. All paths are absolute. A `bear.yml` file is used to configure the bear tool so this should be so. Note bear version schema `4.1` is used.
+The `JUCE` (8.0.13) is in `~/JUCE` and `Enginine` is in `~/Enginine`. All paths are absolute. A `bear.yml` file is used to configure the bear tool so this should be so. Note bear version schema `4.1` is used.
 
-After cloning the repository. Do `cd Engine` and `make clean`. Then maybe `sudo apt install bear` (for the bear tool) and `bear -- make` (instead of `make` just this once). Run `make zlib` to build resources. Run `make user` to change `$HOME` (hardcoded to me as `/home/jacko`) to `/home/$USER` (your home directory) within `compile_commands.json` (for syntax completion). It might work. (2026-06-03)
+After cloning the repository. Do `cd Enginine` and `make clean`. Then maybe `sudo apt install bear` (for the bear tool) and `bear -- make` (instead of `make` just this once). Run `make user` to change `$HOME` (hardcoded to me as `/home/jacko`) to `/home/$USER` (your home directory) within `compile_commands.json` (for syntax completion). It might work. (2026-06-03)
 
 The following `make` targets are available:
 
- - `make` - build the code
+ - `make build` - build the code (default `make`)
  - `make clean` - clean the build
- - `make run` - run the executable
- - `make zlib` - build zlib resources (and for resource help)
- - `make user` - change `$HOME` to `/home/$USER` (do you need `bear`?)
+ - `make run` - run the executable standalone build
+ - `make juce` - renew binary resource information (assumes `Projucer` built and `../JUCE` git repo)
+ - `make user` - change `$HOME` to `/home/$USER` for syntax completion (do you need `bear`?)
+
+ You need to `make juce` if you edit the `.png` or save an updated `presets.xml` as factory defaults.
 
 ## Comercial Stuff
 

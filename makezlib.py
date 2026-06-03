@@ -44,11 +44,5 @@ if script_dir != pwd:
 # Usage
 compress_file("presets.xml", "presets.zlib", True)
 print(
-    "File presets.xml compressed to presets.zlib! (presets.xml can be saved from the plugin)."
-)
-print(
-    "Edit background.xcf and save as background.png? (use gimp export or save as .png)."
-)
-print(
-    "Open and save project with projucer? (to rebuild the binary presets and background resources)."
+    "File presets.xml compressed to presets.zlib! Was presets.xml saved from the plugin?"
 )
