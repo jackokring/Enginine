@@ -294,10 +294,10 @@ void EnginineAudioProcessor::midiClockContinue(bool internal) {
 
 void EnginineAudioProcessor::midiClockStart(bool internal) {
     int channel = internal ? 1 : 0;
-    if(!clockRunning[channel]) {
+    //if(!clockRunning[channel]) {
         songPointer[channel] = 0;
         clockRunning[channel] = true;
-    }
+        //} // LFO sync an DAW
 }
 
 void EnginineAudioProcessor::midiClockStop(bool internal) {
