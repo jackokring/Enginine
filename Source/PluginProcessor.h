@@ -96,12 +96,25 @@ public:
     // MIDI CC to parameter
     juce::AudioParameterFloat** icc[32];
     // MIDI CC 64 to 95 (these are not part of a preset save)
-    // 69 - Hold 2 (I wouldn't use it) => Save Preset In Select
-    // 84 - Portomento (seems it's a duplicate of 5) => MIDI Channel Select
+    // Portomento, like panning is not polysynth, like balance
+    // here's a define to stop overwriting controllers such as sustain pedal
+#define commons nullptr
     juce::AudioParameterFloat** iccHighs[32] = {
-        nullptr, nullptr, nullptr, nullptr, nullptr, &savePreset, nullptr, nullptr,//64 - 71
+        // Brackets for common pedals
+        // 65 - Portomento On/Off => Save Preset In Select
+        // 68 - Legato Footswitch
+        // 69 - Hold 2
+        // Sound Controller 1 - 2
+        commons, &savePreset, commons, commons, nullptr, nullptr, nullptr, nullptr,//64 - 71
+        // Sound Controller 3 - 10
         nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,//72 - 79
+        // General Purpose Controller 1 - 4
+        // 84 - Portomento => MIDI Channel Select
+        // Undefined 85 - 87
         nullptr, nullptr, nullptr, nullptr, &midiChannel, nullptr, nullptr, nullptr,//80 - 87
+        // Hi Resolution Velocity Prefix
+        // Undefined 89 - 90
+        // Effect Depth 1 - 5
         nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr //88 - 95
     };
 
@@ -114,6 +127,9 @@ public:
     float frequencyMult = 1.0f;
     float channelPressure = 0.0f;
     juce::AudioParameterFloat* mod;
+    bool sustainPedal = false;
+    bool sampleNotesAndHoldPedal = false;
+    bool softPedal = false;
 
     float tempoNoSync = 120.0f;
 

@@ -343,6 +343,30 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
 
             return;
         }
+        if(msg.isSustainPedalOn()) {
+            sustainPedal = true;
+            return;
+        }
+        if(msg.isSustainPedalOff()) {
+            sustainPedal = false;
+            return;
+        }
+        if(msg.isSostenutoPedalOn()) {
+            sampleNotesAndHoldPedal = true;
+            return;
+        }
+        if(msg.isSostenutoPedalOff()) {
+            sampleNotesAndHoldPedal = false;
+            return;
+        }
+        if(msg.isSoftPedalOn()) {
+            softPedal = true;
+            return;
+        }
+        if(msg.isSoftPedalOff()) {
+            softPedal = false;
+            return;
+        }
         // process kill notes
         if(msg.isAllNotesOff()) {
             return;
@@ -365,6 +389,10 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
             *mod = 0.0f;
             // channel pressure
             channelPressure = 0.0f;
+            // pedal state
+            sustainPedal = false;
+            sampleNotesAndHoldPedal = false;
+            softPedal = false;
             return;
         }
         // preset change
@@ -388,6 +416,12 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
             return;
         }
         if(msg.isSongPositionPointer()) {
+            return;
+        }
+        if(msg.getRawData()[0] == 0xf3) {
+            // Song Select
+            int song = msg.getRawData()[1];
+            // not sure if I'll use it
             return;
         }
         // watchdog
