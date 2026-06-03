@@ -134,6 +134,18 @@ public:
     void sampleNotesAndHoldPedal(bool on);
     bool softPedal = false;
 
+    // MIDI clock 0 - External, 1 - Internal
+private:
+    int factorSix[2] = { 0, 0 };
+    int songPointer[2] = { 0, 0 };
+    bool clockRunning[2] = { false, false };
+public:
+    void midiClock(bool internal);
+    void midiClockStart(bool internal);
+    void midiClockStop(bool internal);
+    void midiClockContinue(bool internal);
+    void midiSongPosition(bool internal, int position);
+
     float tempoNoSync = 120.0f;// floats?
 
     //==============================================================================

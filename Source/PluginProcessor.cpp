@@ -272,6 +272,45 @@ void EnginineAudioProcessor::process(juce::dsp::AudioBlock<float> signal) {
     // dsp code
 }
 
+void EnginineAudioProcessor::sampleNotesAndHoldPedal(bool on) {
+
+}
+
+void EnginineAudioProcessor::midiClock(bool internal) {
+    int channel = internal ? 1 : 0;
+    if(clockRunning[channel]) {
+        if(factorSix[channel] == 5) {
+            songPointer[channel] = (++songPointer[channel]) % 0x4000;
+            factorSix[channel] = -1;
+        }
+        ++factorSix[channel];
+    }
+}
+
+void EnginineAudioProcessor::midiClockContinue(bool internal) {
+    int channel = internal ? 1 : 0;
+    clockRunning[channel] = true;
+}
+
+void EnginineAudioProcessor::midiClockStart(bool internal) {
+    int channel = internal ? 1 : 0;
+    if(!clockRunning[channel]) {
+        songPointer[channel] = 0;
+        clockRunning[channel] = true;
+    }
+}
+
+void EnginineAudioProcessor::midiClockStop(bool internal) {
+    int channel = internal ? 1 : 0;
+    clockRunning[channel] = false;
+    factorSix[channel] = 0;
+}
+
+void EnginineAudioProcessor::midiSongPosition(bool internal, int position) {
+    int channel = internal ? 1 : 0;
+    songPointer[channel] = position &0x3fff;
+}
+
 void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
     // midi code
     if(msg.isForChannel(*midiChannel)) {
@@ -404,18 +443,23 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
     } else {
         // clocking
         if(msg.isMidiClock()) {
+            midiClock(false);
             return;
         }
         if(msg.isMidiStart()) {
+            midiClockStart(false);
             return;
         }
         if(msg.isMidiStop()) {
+            midiClockStop(false);
             return;
         }
         if(msg.isMidiContinue()) {
+            midiClockContinue(false);
             return;
         }
         if(msg.isSongPositionPointer()) {
+            midiSongPosition(false, msg.getSongPositionPointerMidiBeat());
             return;
         }
         if(msg.getRawData()[0] == 0xf3) {
