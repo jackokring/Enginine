@@ -6,8 +6,6 @@
 
 #pragma once
 
-#include "juce_audio_basics/juce_audio_basics.h"
-#include "juce_audio_processors_headless/juce_audio_processors_headless.h"
 #include <JuceHeader.h>
 #include <JucePluginDefines.h>
 #include "presetnames.h"

@@ -48,13 +48,19 @@ The modulation wheel CC 1 is specially routed and not part of any preset informa
     };
 ```
 
-## Notes on Bear Setup
+## Notes on Bear Setup and Building
 
-After cloning the repository, delete the `.json` file in the root. Goto `Builds/LinuxMakefile` and `make clean`. Then maybe `sudo apt install bear` (for the bear tool) and `bear -- make` instead of `make`. The made file `compile_commands.json` needs linking to the root by `ln -s compile_commands.json ../../compile_commands.json` within the `LinuxMakefile` directory. The settings of open terminals for me are project root (`git`),`LinuxMakefile` (`make`) and a final terminal open in `Builds/LinuxMakefile/build` (for `./Enginine` launching).
+The `JUCE` is in `~/JUCE` and `Enginine` is in `~/Enginine`. All paths are absolute. A `bear.yml` file is used to configure the bear tool so this should be so. Note bear version schema `4.1` is used.
 
-The `JUCE` is in `~/JUCE` and `Enginine` is in `~/Enginine`. So only the hard codded `$HOME` path in the project might cause problems. Can't be helped as far as I've checked. It's why you need to run `bear` make the soft link.
+After cloning the repository. Do `cd Engine` and `make clean`. Then maybe `sudo apt install bear` (for the bear tool) and `bear -- make` (instead of `make` just this once). Run `make zlib` to build resources. Run `make user` to change `$HOME` (hardcoded to me as `/home/jacko`) to `/home/$USER` (your home directory) within `compile_commands.json` (for syntax completion). It might work. (2026-06-03)
 
-I'll work more on this setup later on as the project evolves.
+The following `make` targets are available:
+
+ - `make` - build the code
+ - `make clean` - clean the build
+ - `make run` - run the executable
+ - `make zlib` - build zlib resources (and for resource help)
+ - `make user` - change `$HOME` to `/home/$USER` (do you need `bear`?)
 
 ## Comercial Stuff
 

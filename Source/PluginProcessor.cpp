@@ -5,7 +5,7 @@
   ==============================================================================*/
 
 #include "PluginProcessor.h"
-#include "BinaryData.h"
+#include <BinaryData.h>
 #include "PluginEditor.h"
 #include "juce_audio_basics/juce_audio_basics.h"
 #include "juce_audio_processors_headless/juce_audio_processors_headless.h"

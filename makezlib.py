@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import zlib
 
 
@@ -29,6 +30,17 @@ def compress_file(input_filename, output_filename, cleanXml):
         f.write(compressed_data)
 
 
+# Get the directory where the script file is stored
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Get the Present Working Directory (where the command was run)
+pwd = os.getcwd()
+
+if script_dir != pwd:
+    print("Run ./makezlib.py in the repository root.")
+    exit(1)
+
+
 # Usage
 compress_file("presets.xml", "presets.zlib", True)
 print(
@@ -38,5 +50,5 @@ print(
     "Edit background.xcf and save as background.png? (use gimp export or save as .png)."
 )
 print(
-    "Open and save project with projucer? (rebuild the binary presets and background resources)."
+    "Open and save project with projucer? (to rebuild the binary presets and background resources)."
 )

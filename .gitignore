@@ -1,3 +1,4 @@
 #keep the build off the repo
 Builds/LinuxMakefile/build/
 *.idx
+Builds/LinuxMakefile/.cache/
