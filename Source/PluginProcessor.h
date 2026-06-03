@@ -96,22 +96,25 @@ public:
     // MIDI CC to parameter
     juce::AudioParameterFloat** icc[32];
     // MIDI CC 64 to 95 (these are not part of a preset save)
-    // Portomento, like panning is not polysynth, like balance
+    // Portomento, like panning is not polysynth, like balance (first to go)
     // here's a define to stop overwriting controllers such as sustain pedal
+    // rationale for portomento choices:
+    // 65 is a switch and any channel change is profound
+    // 84 is a variable and might be found useful
 #define commons nullptr
     juce::AudioParameterFloat** iccHighs[32] = {
         // Brackets for common pedals
-        // 65 - Portomento On/Off => Save Preset In Select
+        // 65 - Portomento On/Off => MIDI Channel Select
         // 68 - Legato Footswitch
         // 69 - Hold 2
         // Sound Controller 1 - 2
-        commons, &savePreset, commons, commons, nullptr, nullptr, nullptr, nullptr,//64 - 71
+        commons, &midiChannel, commons, commons, nullptr, nullptr, nullptr, nullptr,//64 - 71
         // Sound Controller 3 - 10
         nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,//72 - 79
         // General Purpose Controller 1 - 4
-        // 84 - Portomento => MIDI Channel Select
+        // 84 - Portomento => Save Preset In Select
         // Undefined 85 - 87
-        nullptr, nullptr, nullptr, nullptr, &midiChannel, nullptr, nullptr, nullptr,//80 - 87
+        nullptr, nullptr, nullptr, nullptr, &savePreset, nullptr, nullptr, nullptr,//80 - 87
         // Hi Resolution Velocity Prefix
         // Undefined 89 - 90
         // Effect Depth 1 - 5
@@ -128,10 +131,10 @@ public:
     float channelPressure = 0.0f;
     juce::AudioParameterFloat* mod;
     bool sustainPedal = false;
-    bool sampleNotesAndHoldPedal = false;
+    void sampleNotesAndHoldPedal(bool on);
     bool softPedal = false;
 
-    float tempoNoSync = 120.0f;
+    float tempoNoSync = 120.0f;// floats?
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnginineAudioProcessor)

@@ -352,11 +352,11 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
             return;
         }
         if(msg.isSostenutoPedalOn()) {
-            sampleNotesAndHoldPedal = true;
+            sampleNotesAndHoldPedal(true);
             return;
         }
         if(msg.isSostenutoPedalOff()) {
-            sampleNotesAndHoldPedal = false;
+            sampleNotesAndHoldPedal(false);
             return;
         }
         if(msg.isSoftPedalOn()) {
@@ -391,7 +391,7 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
             channelPressure = 0.0f;
             // pedal state
             sustainPedal = false;
-            sampleNotesAndHoldPedal = false;
+            sampleNotesAndHoldPedal(false);
             softPedal = false;
             return;
         }
