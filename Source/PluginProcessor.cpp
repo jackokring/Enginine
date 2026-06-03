@@ -363,6 +363,8 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
             frequencyMult = 1.0f;
             // reset mod wheel (assumption of wild to nil)
             *mod = 0.0f;
+            // channel pressure
+            channelPressure = 0.0f;
             return;
         }
         // preset change

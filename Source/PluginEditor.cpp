@@ -164,7 +164,7 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     // TODO: alter look and feel of knobs
     lookAndFeel.setColour(juce::Slider::backgroundColourId, juce::Colours::red);
     // pointer colour
-    lookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::white);
+    lookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::yellow);
     lookAndFeel.setColour(juce::Slider::trackColourId, juce::Colours::green);
     // on colour
     lookAndFeel.setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::green);
@@ -269,6 +269,7 @@ void EnginineAudioProcessorEditor::resized()
     // subcomponents in your editor..
     auto area = getLocalBounds();
     auto keyArea = area.removeFromBottom(keysHeight);
+    keyArea.removeFromRight(2 * margin);// subtle psycho-social bezel effect
     auto miniArea = keyArea.removeFromLeft(303).reduced(margin);
     auto chanArea = miniArea.removeFromLeft(84 * 2);
     auto presetArea = chanArea.removeFromRight(74);
