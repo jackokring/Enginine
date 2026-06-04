@@ -289,6 +289,7 @@ void EnginineAudioProcessor::midiClock(bool internal) {
 
 void EnginineAudioProcessor::midiClockContinue(bool internal) {
     int channel = internal ? 1 : 0;
+    factorSix[channel] = -1;// start from song position downbeat
     clockRunning[channel] = true;
 }
 
@@ -296,6 +297,7 @@ void EnginineAudioProcessor::midiClockStart(bool internal) {
     int channel = internal ? 1 : 0;
     //if(!clockRunning[channel]) {
         songPointer[channel] = 0;
+        factorSix[channel] = -1;
         clockRunning[channel] = true;
         //} // LFO sync an DAW
 }
@@ -303,7 +305,6 @@ void EnginineAudioProcessor::midiClockStart(bool internal) {
 void EnginineAudioProcessor::midiClockStop(bool internal) {
     int channel = internal ? 1 : 0;
     clockRunning[channel] = false;
-    factorSix[channel] = 0;
 }
 
 void EnginineAudioProcessor::midiSongPosition(bool internal, int position) {
