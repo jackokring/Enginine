@@ -30,9 +30,9 @@ So I've dumped `KDevelop` and started using `Zed` (with `bear` to make the `comp
 
 ## MIDI CC Assignments
 
-Testing with `Carla` as the host restricts use of CCs 2 (dry/wet), 7 (mix volume) and 8 (balance). Also CC 6 (RPN/NRPN data entry) would be somewhat of a pain to use in many studio kinds of settings. Also reserving CC 6 for RPN/NRPN data entry, allows for some hidden parameters to be accessed via CC.
+Testing with `Carla` as the host restricts use of CCs 2 (dry/wet), 7 (mix volume) and 8 (balance). Also CC 6 (RPN/NRPN data entry) would be somewhat of a pain to use in many studio kinds of settings. Also reserving CC 6 for RPN/NRPN data entry, can allow for some hidden parameters to be accessed via CC.
 
-The modulation wheel CC 1 is specially routed and not part of any preset information. This then leaves the rest of the 14 bit CCs for use as the 27 knob slots. In `C`/`C++` this was expressed in the 9 across and 3 down grid layout like below for matching with the front panel layout.
+The modulation wheel CC 1 is specially routed and not part of any preset information. This then leaves the rest of the 14 bit CCs for use as the 27 knob slots. In `C++` this was expressed in the 9 across and 3 down grid layout like below for matching with the front panel layout. This is not totally MIDI specification but does place the simple 14 bit CCs in a convenient grid layout for the front panel, while avoiding enough standardized ones.
 
 ```C
     // MIDI CC 14 bit controller numbers n and n+32
@@ -47,6 +47,8 @@ The modulation wheel CC 1 is specially routed and not part of any preset informa
         { 23, 24, 25, 26, 27, 28, 29, 30, 31 }
     };
 ```
+
+Other auxilliary controls can have CC numbers assigned, and the tooltips will show the CC number. As a polysynth design, portomento is not supported, and therefore was the first for reassignment. Not being a member of the MIDI Association I guess has benefits of some non-compliance flexibility.
 
 ## Notes on Bear Setup and Building
 
