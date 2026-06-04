@@ -182,7 +182,6 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
     // bend
     knob(bendSlider, [this] {
         *audioProcessor.bend = bendSlider.getValue();
-        audioProcessor.frequencyMult = std::powf(2.0f, (bendSlider.getValue() - 0.5f) * 2.0f);// +- 1 octave
     }, audioProcessor.bend, bendPA, false);
 
     // mod

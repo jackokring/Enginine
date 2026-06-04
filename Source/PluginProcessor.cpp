@@ -356,8 +356,6 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
             int wheel = msg.getPitchWheelValue();
             float norm = (float)wheel / 0x3fff;
             *bend = bend->convertFrom0to1(norm);
-            // speed cache as simplest solution
-            frequencyMult = std::powf(2.0f, (norm - 0.5f) * 2.0f);// +- 1 octave
             return;
         }
         // notes
@@ -504,7 +502,10 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // Visuals, not sample acurate
     keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
 
-    over.reset();
+    // onces
+    frequencyMult = std::powf(2.0f, (*bend - 0.5f) * 2.0f);// +- 1 octave
+
+    //over.reset();// how would it remember the last filter memory state?
     juce::dsp::AudioBlock<float> block(buffer);
     auto signal = over.processSamplesUp(block);
     //=======================================================================
