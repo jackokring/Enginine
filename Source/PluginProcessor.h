@@ -136,7 +136,7 @@ public:
 
     // MIDI clock 0 - External, 1 - Internal
 private:
-    int factorSix[2] = { 0, 0 };
+    int factorSix[2] = { 0, -1 };// arm for down beat
     int songPointer[2] = { 0, 0 };
     bool clockRunning[2] = { false, true };
 public:
