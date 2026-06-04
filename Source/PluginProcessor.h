@@ -138,7 +138,7 @@ public:
 private:
     int factorSix[2] = { 0, 0 };
     int songPointer[2] = { 0, 0 };
-    bool clockRunning[2] = { false, false };
+    bool clockRunning[2] = { false, true };
 public:
     void midiClock(bool internal);
     void midiClockStart(bool internal);
