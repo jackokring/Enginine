@@ -202,6 +202,11 @@ EnginineAudioProcessorEditor::EnginineAudioProcessorEditor (EnginineAudioProcess
         *audioProcessor.savePreset = (int)presetSlider.getValue();
     }, audioProcessor.savePreset, presetPA, false, 69, true);
 
+    // LFO BPM
+    knob(lfoBpmSlider, [this] {
+        *audioProcessor.bpm = lfoBpmSlider.getValue();
+    }, audioProcessor.bpm, lfoBpmPA, false, 85, true);
+
     // general parameters
     knob(volumeSlider, [this] {
       *audioProcessor.volume = volumeSlider.getValue();
@@ -268,7 +273,7 @@ void EnginineAudioProcessorEditor::resized()
     // subcomponents in your editor..
     auto area = getLocalBounds();
     auto keyArea = area.removeFromBottom(keysHeight);
-    keyArea.removeFromRight(2 * margin);// subtle psycho-social bezel effect
+    auto bpmArea = keyArea.removeFromRight(74);
     auto miniArea = keyArea.removeFromLeft(303).reduced(margin);
     auto chanArea = miniArea.removeFromLeft(84 * 2);
     auto presetArea = chanArea.removeFromRight(74);
@@ -279,6 +284,7 @@ void EnginineAudioProcessorEditor::resized()
     bendSlider.setBounds(bendArea);
     modSlider.setBounds(modArea);
     keyboard.setBounds(keyArea);
+    lfoBpmSlider.setBounds(bpmArea);
     area = area.reduced(margin);
 
     auto cWidth = area.getWidth() / 9.0f;

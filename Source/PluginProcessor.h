@@ -8,6 +8,7 @@
 
 #include <JuceHeader.h>
 #include <JucePluginDefines.h>
+#include "juce_audio_processors_headless/juce_audio_processors_headless.h"
 #include "presetnames.h"
 
 //==============================================================================
@@ -31,6 +32,8 @@ public:
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
     void process(juce::dsp::AudioBlock<float> signal);
     void midi(juce::MidiMessage& msg);
+    // cache optimization of changed parameters
+    void onces();
 
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
@@ -113,8 +116,9 @@ public:
         nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,//72 - 79
         // General Purpose Controller 1 - 4
         // 84 - Portomento => Save Preset In Select
-        // Undefined 85 - 87
-        nullptr, nullptr, nullptr, nullptr, &savePreset, nullptr, nullptr, nullptr,//80 - 87
+        // 85 - Undefined => BPM
+        // Undefined 86 - 87
+        nullptr, nullptr, nullptr, nullptr, &savePreset, &bpm, nullptr, nullptr,//80 - 87
         // Hi Resolution Velocity Prefix
         // Undefined 89 - 90
         // Effect Depth 1 - 5
@@ -127,7 +131,7 @@ public:
 
     // MIDI pitch bend (+- 1 octave)
     juce::AudioParameterFloat* bend;
-    float frequencyMult = 1.0f;
+    float frequencyMult = 1.0f;// cached for performance (onces)
     float channelPressure = 0.0f;
     juce::AudioParameterFloat* mod;
     bool sustainPedal = false;
@@ -146,7 +150,9 @@ public:
     void midiClockContinue(bool internal);
     void midiSongPosition(bool internal, int position);
 
-    float tempoNoSync = 120.0f;// floats?
+    juce::AudioParameterFloat* bpm;// LFO BPM
+    float samplesPerMidiClock;// cached for performance (onces)
+    int sampleAccumulator = 0;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnginineAudioProcessor)

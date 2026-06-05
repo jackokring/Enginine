@@ -85,6 +85,8 @@ public:
     juce::SliderParameterAttachment *volumePA;
     juce::Slider midiChannelSlider;
     juce::SliderParameterAttachment *midiChannelPA;
+    juce::Slider lfoBpmSlider;
+    juce::SliderParameterAttachment *lfoBpmPA;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnginineAudioProcessorEditor)
 };

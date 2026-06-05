@@ -85,6 +85,7 @@ EnginineAudioProcessor::EnginineAudioProcessor()
     auto nibble = juce::NormalisableRange<float>(1.0f, 16.0f, 1.0f);
     //auto hearing = logRange(20.0f, 20000.0f);
     auto octaveBend = juce::NormalisableRange<float>(-12.0f, 12.0f, 0.0f);
+    auto bpmRange = juce::NormalisableRange<float>(12.0f, 1200.0f, 1.0f);
 
     //=============================================================================
     // parameters of the plugin
@@ -133,6 +134,14 @@ EnginineAudioProcessor::EnginineAudioProcessor()
             natural.withLabel(" chan") // restrictions on print
         )
     );
+
+    addParameter(bpm = new juce::AudioParameterFloat (
+        { "lfoBpm", 1 },
+        "LFO BPM",
+        bpmRange, // parameter range
+        120.0f, // default value
+        natural.withLabel(" BPM") // restrictions on print
+    ));
 
     //=============================================================================
     // anything else last?
@@ -268,8 +277,21 @@ bool EnginineAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts)
 }
 #endif
 
+// MIDI CC in sample acurate, not sure about the latency
+// of VST parameter changes as likely block aligned
+// I guess it's one for legacy MIDI CC
+void EnginineAudioProcessor::onces() {
+    // cache optimization of changed parameters
+    frequencyMult = std::powf(2.0f, (*bend - 0.5f) * 2.0f);// +- 1 octave
+    samplesPerMidiClock = getSampleRate() * 60.0f / ((*bpm) * 24.0f) * 4;// with 4x oversampling
+}
+
 void EnginineAudioProcessor::process(juce::dsp::AudioBlock<float> signal) {
     // dsp code
+
+    // accumulate samples to clock internal LFO
+
+
 }
 
 void EnginineAudioProcessor::sampleNotesAndHoldPedal(bool on) {
@@ -422,7 +444,6 @@ void EnginineAudioProcessor::midi(juce::MidiMessage& msg) {
             }
             // rest bender
             *bend = 0.0f;
-            frequencyMult = 1.0f;
             // reset mod wheel (assumption of wild to nil)
             *mod = 0.0f;
             // channel pressure
@@ -502,8 +523,8 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     // Visuals, not sample acurate
     keyState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
 
-    // onces
-    frequencyMult = std::powf(2.0f, (*bend - 0.5f) * 2.0f);// +- 1 octave
+    // possible changes of cached parameter calcs
+    onces();
 
     //over.reset();// how would it remember the last filter memory state?
     juce::dsp::AudioBlock<float> block(buffer);
@@ -518,6 +539,8 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         process(signal.getSubBlock(begin, upto - begin));
         begin = upto;
         midi(msg);
+        // possible changes of cached parameter calcs
+        onces();
     }
     process(signal.getSubBlock(begin, num - begin));
 
@@ -534,6 +557,8 @@ void EnginineAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         }
     }
 
+    // now processed can add in all CC dragged GUI messages to thru chain
+    // a bit latency bad, but the GUI would present most of the latency
     if(midiOutLock.try_lock()) {
         for(auto m: midiOutBuffer) {
             // add drag drops at beginning of block as ...
