@@ -320,7 +320,7 @@ void EnginineAudioProcessor::midiClock(bool internal, int by) {
     int increaseClock = ((int)(clockRunning[channel]) & 1) * by;
     int increaseSongPointer = ((int)(factorSix[channel] == 5) & 1) * increaseClock;
     increaseClock = increaseClock - 6 * increaseSongPointer;// auto to -1
-    songPointer[channel] = (songPointer[channel] + increaseSongPointer) % 0x4000;
+    songPointer[channel] = (songPointer[channel] + increaseSongPointer) & 0x3fff;
     factorSix[channel] = (factorSix[channel] + increaseClock);// avoids non power of 2 modulo %
 }
 
