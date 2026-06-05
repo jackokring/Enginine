@@ -292,11 +292,9 @@ void EnginineAudioProcessor::process(juce::dsp::AudioBlock<float> signal) {
 
     // accumulate samples to clock internal LFO
     for(int i = 0; i < signal.getNumSamples(); ++i) {
-        bool clk = (sampleAccumulator - samplesPerMidiClock) >= 0;
-        if(clk) {
-            midiClockContinue(true);
-            sampleAccumulator -= samplesPerMidiClock;
-        }
+        int clk = (int)((sampleAccumulator - samplesPerMidiClock) >= 0) & 1;
+        midiClock(true, clk);
+        sampleAccumulator -= clk * samplesPerMidiClock;
         ++sampleAccumulator;
 
         // now do the rest of the block dsp for a sample and two channels
@@ -316,10 +314,10 @@ void EnginineAudioProcessor::sampleNotesAndHoldPedal(bool on) {
 
 }
 
-void EnginineAudioProcessor::midiClock(bool internal) {
+void EnginineAudioProcessor::midiClock(bool internal, int by) {
     // no ifs, big butts
     int channel = (int)internal & 1;
-    int increaseClock = (int)(clockRunning[channel]) & 1;
+    int increaseClock = ((int)(clockRunning[channel]) & 1) * by;
     int increaseSongPointer = ((int)(factorSix[channel] == 5) & 1) * increaseClock;
     increaseClock = increaseClock - 6 * increaseSongPointer;// auto to -1
     songPointer[channel] = (songPointer[channel] + increaseSongPointer) % 0x4000;

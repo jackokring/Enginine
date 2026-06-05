@@ -144,7 +144,7 @@ private:
     int songPointer[2] = { 0, 0 };
     bool clockRunning[2] = { false, true };
 public:
-    void midiClock(bool internal);
+    void midiClock(bool internal, int by = 1);
     void midiClockStart(bool internal);
     void midiClockStop(bool internal);
     void midiClockContinue(bool internal);
