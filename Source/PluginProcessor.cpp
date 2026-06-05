@@ -85,7 +85,8 @@ EnginineAudioProcessor::EnginineAudioProcessor()
     auto nibble = juce::NormalisableRange<float>(1.0f, 16.0f, 1.0f);
     //auto hearing = logRange(20.0f, 20000.0f);
     auto octaveBend = juce::NormalisableRange<float>(-12.0f, 12.0f, 0.0f);
-    auto bpmRange = juce::NormalisableRange<float>(12.0f, 1200.0f, 1.0f);
+    // going to be ratio multiplied anyway elsewhere on the control path
+    auto bpmRange = juce::NormalisableRange<float>(60.0f, 240.0f, 2.0f);
 
     //=============================================================================
     // parameters of the plugin
