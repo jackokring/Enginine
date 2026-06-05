@@ -291,7 +291,24 @@ void EnginineAudioProcessor::process(juce::dsp::AudioBlock<float> signal) {
     // dsp code
 
     // accumulate samples to clock internal LFO
+    for(int i = 0; i < signal.getNumSamples(); ++i) {
+        bool clk = (sampleAccumulator - samplesPerMidiClock) >= 0;
+        if(clk) {
+            midiClockContinue(true);
+            sampleAccumulator -= samplesPerMidiClock;
+        }
+        ++sampleAccumulator;
 
+        // now do the rest of the block dsp for a sample and two channels
+#pragma GCC ivdep
+        for (int chan = 0; chan < signal.getNumChannels(); ++chan) {
+            float sample = signal.getSample(chan, i);
+
+            // process a sample
+        }
+    }
+
+    // post block workings
 
 }
 
