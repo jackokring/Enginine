@@ -317,14 +317,13 @@ void EnginineAudioProcessor::sampleNotesAndHoldPedal(bool on) {
 }
 
 void EnginineAudioProcessor::midiClock(bool internal) {
-    int channel = internal ? 1 : 0;
-    if(clockRunning[channel]) {
-        if(factorSix[channel] == 5) {
-            songPointer[channel] = (++songPointer[channel]) % 0x4000;
-            factorSix[channel] = -1;
-        }
-        ++factorSix[channel];
-    }
+    // no ifs, big butts
+    int channel = (int)internal & 1;
+    int increaseClock = (int)(clockRunning[channel]) & 1;
+    int increaseSongPointer = ((int)(factorSix[channel] == 5) & 1) * increaseClock;
+    increaseClock = increaseClock - 6 * increaseSongPointer;// auto to -1
+    songPointer[channel] = (songPointer[channel] + increaseSongPointer) % 0x4000;
+    factorSix[channel] = (factorSix[channel] + increaseClock);// avoids non power of 2 modulo %
 }
 
 void EnginineAudioProcessor::midiClockContinue(bool internal) {
