@@ -90,6 +90,26 @@ EnginineAudioProcessor::EnginineAudioProcessor()
 
     //=============================================================================
     // parameters of the plugin
+    addParameter (
+        savePreset = new juce::AudioParameterFloat (
+            { "savePreset", 1 }, // parameter ID, version
+            "Save As", // parameter name
+            preset128, // parameter range
+            0.0f, // default value
+            presetName // restrictions on print
+        )
+    );
+
+    addParameter(
+        midiChannel = new juce::AudioParameterFloat (
+            { "midiChannel", 1 },
+            "MIDI Channel",
+            nibble, // parameter range
+            1.0f, // default value
+            natural.withLabel(" chan") // restrictions on print
+        )
+    );
+
     addParameter(bend = new juce::AudioParameterFloat (
         { "bend", 1 }, // parameter ID, version
         "Pitch Bend", // parameter name
@@ -106,16 +126,18 @@ EnginineAudioProcessor::EnginineAudioProcessor()
         decimals.withLabel(" %")
     ));
 
-    addParameter (
-        savePreset = new juce::AudioParameterFloat (
-            { "savePreset", 1 }, // parameter ID, version
-            "Save As", // parameter name
-            preset128, // parameter range
-            0.0f, // default value
-            presetName // restrictions on print
-        )
-    );
+    addParameter(bpm = new juce::AudioParameterFloat (
+        { "lfoBpm", 1 },
+        "LFO BPM",
+        bpmRange, // parameter range
+        120.0f, // default value
+        natural.withLabel(" BPM") // restrictions on print
+    ));
 
+    //====================================================
+    // IMPORTANT: Decides automation parameter order in VST3
+    // Then the main panel
+    // row 1, col 9
     addParameter (
         volume = new juce::AudioParameterFloat (
             { "volume", 1 }, // parameter ID, version
@@ -125,24 +147,6 @@ EnginineAudioProcessor::EnginineAudioProcessor()
             decimals.withLabel(" %") // restrictions on print
         )
     );
-
-    addParameter(
-        midiChannel = new juce::AudioParameterFloat (
-            { "midiChannel", 1 },
-            "MIDI Channel",
-            nibble, // parameter range
-            1.0f, // default value
-            natural.withLabel(" chan") // restrictions on print
-        )
-    );
-
-    addParameter(bpm = new juce::AudioParameterFloat (
-        { "lfoBpm", 1 },
-        "LFO BPM",
-        bpmRange, // parameter range
-        120.0f, // default value
-        natural.withLabel(" BPM") // restrictions on print
-    ));
 
     //=============================================================================
     // anything else last?

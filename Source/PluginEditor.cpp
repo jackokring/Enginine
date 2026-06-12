@@ -222,6 +222,7 @@ EnginineAudioProcessorEditor::~EnginineAudioProcessorEditor()
     delete bendPA;
     delete modPA;
     delete midiChannelPA;
+    delete lfoBpmPA;
 
     // apparently it needs it to deallocate lookAndFeel
     setLookAndFeel(nullptr);
